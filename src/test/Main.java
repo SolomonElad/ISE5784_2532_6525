@@ -1,7 +1,7 @@
 package test;
 /*
- * @author elad solomon | 325192532
- * @author tzur tamir | 207876525
+ * @author elad solomon | 325192532 | e.solomon.co.il@gmail.com
+ * @author tzur tamir | 207876525 | Tzur.tamir1@gmail.com
  */
 
 import static java.lang.System.out;
