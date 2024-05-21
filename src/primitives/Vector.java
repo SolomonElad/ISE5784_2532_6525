@@ -17,7 +17,7 @@ public class Vector extends Point {
      */
     public Vector(double x, double y, double z) {
         super(x, y, z);
-        if (this.equals(Point.ZERO)) {
+        if (super.equals(Point.ZERO)) {
             throw new IllegalArgumentException("Zero vector is not allowed");
         }
     }
@@ -95,7 +95,7 @@ public class Vector extends Point {
     public Vector crossProduct(Vector vector) {
         return new Vector(
                 this.xyz.d2 * vector.xyz.d3 - vector.xyz.d2 * this.xyz.d3,
-                (-(this.xyz.d1 * vector.xyz.d3 - vector.xyz.d1 * this.xyz.d3)),
+                -(this.xyz.d1 * vector.xyz.d3 - vector.xyz.d1 * this.xyz.d3),
                 this.xyz.d1 * vector.xyz.d2 - vector.xyz.d1 * this.xyz.d2
                 );
     }
