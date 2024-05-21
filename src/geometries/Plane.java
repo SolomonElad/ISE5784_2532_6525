@@ -5,9 +5,10 @@ import primitives.Vector;
 
 /**
  * Class Plane represents a plane in the 3D space
- * The class is based on the Point and Vector classes
+ * The plane is represented by point and vector
  * */
-public class Plane {
+public class Plane implements Geometry {
+
     private final Point q;
     private final Vector normal;
 
@@ -37,6 +38,11 @@ public class Plane {
      * @return the normal of the plane
      */
     public Vector getNormal() {
+        return this.normal;
+    }
+
+    @Override
+    public Vector getNormal(Point point) {
         return this.normal;
     }
 }

@@ -11,7 +11,7 @@ import primitives.Vector;
 public interface Geometry {
     /**
      * method to get the normal of the geometry in specific point
-     * @param point point on the geometry
+     * @param point point on the geometry's surface
      * @return the normal of the geometry in the point
      */
     public Vector getNormal(Point point);

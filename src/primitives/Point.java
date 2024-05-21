@@ -35,11 +35,6 @@ public class Point {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hashCode(xyz);
-    }
-
-    @Override
     public String toString() {
         return "Point{" + xyz + '}';
     }

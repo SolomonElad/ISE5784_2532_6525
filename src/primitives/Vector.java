@@ -6,7 +6,6 @@ import static primitives.Util.isZero;
 /**
  * Class Vector is the basic class representing a vector in a 3D system.
  * The class is based on Point class.
- * The class is based on Double3 class.
  */
 public class Vector extends Point {
     /**
@@ -39,7 +38,10 @@ public class Vector extends Point {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        if (this == obj) return true;
+        return obj instanceof Vector
+                && super.equals(obj);
+
     }
 
     @Override
@@ -68,8 +70,6 @@ public class Vector extends Point {
      * @throws IllegalArgumentException if the scalar is zero
      */
     public Vector scale(double scalar) {
-        if (isZero(scalar))
-            throw new IllegalArgumentException("Scale by zero is not allowed");
         return new Vector(this.xyz.scale(scalar));
     }
 
@@ -94,11 +94,6 @@ public class Vector extends Point {
      * (the cross product of parallel vectors is not allowed)
      */
     public Vector crossProduct(Vector vector) {
-
-        //check if the vectors are parallel
-        if (this.equals(vector) || this.equals(vector.scale(-1)))
-            throw new IllegalArgumentException("Cross product of parallel vectors is not allowed");
-
         return new Vector(
                 this.xyz.d2 * vector.xyz.d3 - vector.xyz.d2 * this.xyz.d3,
                 (-(this.xyz.d1 * vector.xyz.d3 - vector.xyz.d1 * this.xyz.d3)),
@@ -133,9 +128,6 @@ public class Vector extends Point {
      */
     // if the vector is closer to the zero vector - it will be detected in the vector constructor
     public Vector normalize() {
-        double length = alignZero(length());
-        if (length == 0)
-            throw new IllegalArgumentException("Normalize of zero vector is not allowed");
-        return new Vector((xyz.reduce(length)));
+        return new Vector((xyz.reduce(alignZero(length()))));
     }
 }
