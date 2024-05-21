@@ -6,10 +6,10 @@ import java.util.Objects;
  * The class is based on the Point and Vector classes
  * */
 public class Ray {
-    /** The head of the ray */
-    final Point head;
-    /** The direction of the ray */
-    final Vector direction;
+    /* The head of the ray */
+    private final Point head;
+    /* The direction of the ray */
+    private final Vector direction;
 
     /** Constructor for a ray in the 3D space
      * @param head the head of the ray

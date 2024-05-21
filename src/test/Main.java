@@ -4,11 +4,13 @@ package test;
  * @author tzur tamir | 207876525 | Tzur.tamir1@gmail.com
  */
 
+import primitives.Double3;
+import primitives.Point;
+import primitives.Vector;
+
 import static java.lang.System.out;
 
 import static primitives.Util.isZero;
-
-import primitives.*;
 
 /**
  * Test program for the 1st stage
@@ -21,7 +23,7 @@ public final class Main {
     * @param args irrelevant here
     */
    public static void main(String[] args) {
-      Point  p1         = new Point(1, 2, 3);
+      Point p1         = new Point(1, 2, 3);
       Point  p2         = new Point(2, 4, 6);
       Point  p3         = new Point(2, 4, 5);
 

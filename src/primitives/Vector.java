@@ -1,5 +1,8 @@
 package primitives;
 
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
+
 /**
  * Class Vector is the basic class representing a vector in a 3D system.
  * The class is based on Point class.
@@ -16,7 +19,7 @@ public class Vector extends Point {
      */
     public Vector(double x, double y, double z) {
         super(x, y, z);
-        if (xyz.equals((Double3.ZERO))) {
+        if (this.equals(Point.ZERO)) {
             throw new IllegalArgumentException("Zero vector is not allowed");
         }
     }
@@ -29,7 +32,6 @@ public class Vector extends Point {
      */
     public Vector(Double3 xyz) {
         super(xyz);
-
         if (xyz.equals(Double3.ZERO)) {
             throw new IllegalArgumentException("Zero vector is not allowed");
         }
@@ -63,8 +65,11 @@ public class Vector extends Point {
      * Scale a vector by a scalar
      * @param scalar the scalar to scale the vector by
      * @return a vector that represents the scaled vector
+     * @throws IllegalArgumentException if the scalar is zero
      */
     public Vector scale(double scalar) {
+        if (isZero(scalar))
+            throw new IllegalArgumentException("Scale by zero is not allowed");
         return new Vector(this.xyz.scale(scalar));
     }
 
@@ -84,9 +89,16 @@ public class Vector extends Point {
      * Calculate the cross product of two vectors
      * @param vector the vector to calculate the cross product with
      * @return the cross product of the two vectors
-     * formulas: (d2 * d3 - d2 * d3, -(d1 * d3 - d1 * d3), d1 * d2 - d1 * d2)
+     * formulas: (u2 * v3 - v2 * u3),-(u1 * v3 - v1 * u3),(u1 * v2 - v1 * u2)
+     * @throws IllegalArgumentException if the vectors are parallel
+     * (the cross product of parallel vectors is not allowed)
      */
     public Vector crossProduct(Vector vector) {
+
+        //check if the vectors are parallel
+        if (this.equals(vector) || this.equals(vector.scale(-1)))
+            throw new IllegalArgumentException("Cross product of parallel vectors is not allowed");
+
         return new Vector(
                 this.xyz.d2 * vector.xyz.d3 - vector.xyz.d2 * this.xyz.d3,
                 (-(this.xyz.d1 * vector.xyz.d3 - vector.xyz.d1 * this.xyz.d3)),
@@ -116,9 +128,14 @@ public class Vector extends Point {
     /**
      * Normalize a vector
      * @return a vector that represents the normalized vector
+     * @throws IllegalArgumentException if the vector is the zero vector
      * formulas: (d1 / length, d2 / length, d3 / length)
      */
+    // if the vector is closer to the zero vector - it will be detected in the vector constructor
     public Vector normalize() {
-        return new Vector((xyz.reduce(length())));
+        double length = alignZero(length());
+        if (length == 0)
+            throw new IllegalArgumentException("Normalize of zero vector is not allowed");
+        return new Vector((xyz.reduce(length)));
     }
 }

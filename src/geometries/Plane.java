@@ -36,8 +36,7 @@ public class Plane {
      * method to get the normal of the plane
      * @return the normal of the plane
      */
-    public Vector getNormal()
-    {
+    public Vector getNormal() {
         return this.normal;
     }
 }
