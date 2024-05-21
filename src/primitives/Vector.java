@@ -1,7 +1,6 @@
 package primitives;
 
 import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
 
 /**
  * Class Vector is the basic class representing a vector in a 3D system.
