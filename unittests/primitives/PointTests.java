@@ -3,6 +3,8 @@ package primitives;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 /**
  * Unit tests for primitives.Point class
  */
@@ -39,9 +41,9 @@ class PointTests {
 
         // ================= Boundary Values Tests =================
         // TC10: add opposite vector to point - should throw exception
-        assertThrows(IllegalArgumentException.class,
-                () -> new Point(1, 2, 3).add(new Vector(-1, -2, -3)),
-                "ERROR: (point + vector) = center of coordinates does not work correctly");
+        assertEquals(Point.ZERO,
+                new Point(1, 2, 3).add(new Vector(-1, -2, -3)),
+                "ERROR: (point + vector) = cannot add zero vector");
     }
 
     /**

@@ -23,7 +23,12 @@ public class Tube extends RadialGeometry {
 
     @Override
     public Vector getNormal(Point point) {
-        //should be implemented later
-        return null;
+        //if point is on same slice as head of axis - create the normalized vector like on a circle
+        if(axis.getDirection().dotProduct(point.subtract(axis.getHead()))==0)
+            return point.subtract(axis.getHead()).normalize();
+        //else, calculate the center point of the slice of the cylinder that contains point,
+        //then create the normalized vector like on a circle
+        return point.subtract(axis.getHead().add(axis.getDirection().scale(
+                axis.getDirection().dotProduct(point.subtract(axis.getHead()))))).normalize();
     }
 }

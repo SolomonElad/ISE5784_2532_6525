@@ -40,12 +40,6 @@ public class Vector extends Point {
         if (this == obj) return true;
         return obj instanceof Vector
                 && super.equals(obj);
-
-    }
-
-    @Override
-    public int hashCode() {
-        return super.hashCode();
     }
 
     @Override

@@ -12,16 +12,15 @@ public class Plane implements Geometry {
     private final Point q;
     private final Vector normal;
 
-    /** Constructor for a plane in the 3D space
+    /** Constructor for a plane in the 3D space - creates a normalized vector
+     * using the cross product of two vectors on the plane
      * @param point1 the first point on the plane
      * @param point2 the second point on the plane
      * @param point3 the third point on the plane
      */
     public Plane(Point point1, Point point2, Point point3) {
         this.q = point1;
-
-        //should be implemented later
-        this.normal = null;
+        this.normal = point1.subtract(point2).crossProduct(point1.subtract(point3)).normalize();
     }
 
     /** Constructor for a plane in the 3D space

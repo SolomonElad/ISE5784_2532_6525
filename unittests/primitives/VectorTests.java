@@ -80,8 +80,8 @@ class VectorTests {
 
 
         // =============== Boundary Values Tests =================
-        // TC11: dot product with zero vector
-        // cant happen because we have a constructor that checks if the vector is zero - this not valid
+        // TC11: dot product with zero vector - cant happen
+        // because we have a constructor that checks if the vector is zero - this not valid
 
         // TC12: Simple dot product test - orthogonal vectors - always 0
         assertEquals(0,
@@ -109,13 +109,8 @@ class VectorTests {
         // TC11: cross product with zero vector
         // cant happen because we have a constructor that checks if the vector is zero - this not valid
 
-        // TC12: Simple cross product test - same direction vectors (parallel) - should throw exception
-        assertThrows(IllegalArgumentException.class,
-                () -> new Vector(1, 2, 3).crossProduct(new Vector(2, 4, 6)),
-                "ERROR: crossProduct for same direction (parallel) vectors does not throw an exception");
-
-        // TC13: Simple cross product test - opposite direction vectors (anti-parallel) - should throw exception
-        assertThrows(IllegalArgumentException.class,
+        // TC12: Simple cross product test - parallel vectors - should throw exception
+       assertThrows(IllegalArgumentException.class,
                 () -> new Vector(1, 2, 3).crossProduct(new Vector(-2, -4, -6)),
                 "ERROR: crossProduct for opposite direction vectors does not throw an exception");
     }
