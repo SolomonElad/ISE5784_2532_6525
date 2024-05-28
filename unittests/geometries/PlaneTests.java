@@ -30,7 +30,7 @@ class PlaneTests {
                         new Point(0, 1, 0)),
                 "ERROR: Plane.Plane - no exception thrown for collision of 2 of the given points");
 
-        // TC10: all 3 points are on the same line
+        // TC11: all 3 points are on the same line
         assertThrows(IllegalArgumentException.class, //
                 () ->new Plane(new Point(1, 0, 0),
                         new Point(2, 0, 0),
@@ -45,8 +45,7 @@ class PlaneTests {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
-
-        Point p1 =new Point(-2, 0, 0);
+        Point p1 = new Point(-2, 0, 0);
         Point p2 = new Point(4, 0, 0);
         Point p3 = new Point(0, 6, 0);
         Vector norm = new Plane(p1, p2, p3).getNormal(p1);

@@ -30,11 +30,6 @@ public class Ray {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(head, direction);
-    }
-
-    @Override
     public String toString() {
         return "Ray{" +
                 "head=" + head +
@@ -43,8 +38,9 @@ public class Ray {
     }
 
     public Vector getDirection() {
-    return direction;
+        return direction;
     }
+
     public Point getHead() {
         return head;
     }
