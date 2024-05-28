@@ -33,7 +33,6 @@ class CylinderTests {
                 "ERROR: Cylinder.getNormal - incorrect tube vector for far-from-axis base");
 
         // =============== Boundary Values Tests ==================
-
         // TC10: normal for the center of cylinder's close-to-axis base
         assertEquals(v1.scale(-1), cyl.getNormal(new Point(0,0,1)),
                 "ERROR: Cylinder.getNormal - incorrect tube vector for far-from-axis base's center");
