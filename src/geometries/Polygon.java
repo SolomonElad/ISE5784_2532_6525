@@ -2,9 +2,11 @@ package geometries;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 /**
@@ -82,4 +84,44 @@ public class Polygon implements Geometry {
    @Override
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
+   @Override
+   public List<Point> findIntersections(Ray ray) {
+
+      // if there are no intersections with the polygon's plane, there are no intersections with the polygon
+      if (this.plane.findIntersections(ray) == null)
+         return null;
+
+      // calculate the vectors from the ray's head to the vertices of the polygon
+      List<Vector> Vectors = new java.util.ArrayList<>(List.of());
+
+      Point head = ray.getHead();
+       for (Point vertex : vertices) {
+           Vectors.add(vertex.subtract(head));
+       }
+
+      List<Vector> NVectors = new java.util.ArrayList<>(List.of());
+
+      for (int i = 0; i < size; i++) {
+         NVectors.add(Vectors.get(i).crossProduct(Vectors.get((i + 1) % size).normalize()));
+      }
+
+      Vector direction = ray.getDirection();
+      // if we get same sign for all dotProducts, the intersection is inside the triangle
+
+      int i = 0;
+      int k = 0;
+      for (Vector vector : NVectors) {
+         double dotProduct = alignZero(direction.dotProduct(vector));
+         if (dotProduct > 0)
+            i++;
+         if (dotProduct < 0)
+            k++;
+      }
+
+      if (i == NVectors.size() || k == NVectors.size())
+         // delegation to plane
+         return plane.findIntersections(ray);
+
+      return null;
+   }
 }

@@ -2,7 +2,10 @@ package geometries;
 
 import org.junit.jupiter.api.Test;
 import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,4 +38,35 @@ class TriangleTests {
                         "ERROR: Triangle.getNormal - does not return a normalized vector");
         }
 
+        @Test
+        void testFindIntersections() {
+                Triangle triangle = new Triangle(new Point(0, 1, 0), new Point(-6,6,1), new Point(-7,3,5));
+
+                // ============ Equivalence partitions Tests ==============
+                // TC01: The intersection point is in the triangle (1 point)
+                assertEquals(List.of(new Point(-4,4,1)),
+                        triangle.findIntersections(new Ray(new Point(1, 2,3), new Vector(-5,2,-2))),
+                        "ERROR: The point supposed to be in the triangle - not working as expected");
+
+                // TC02: The intersection point is outside the triangle, against edge (0 point)
+                assertNull(triangle.findIntersections(new Ray(new Point(1,2,3), new Vector(-9,3,0))),
+                        "ERROR: The point supposed to be outside the triangle, against edge - not working as expected");
+
+                // TC03: The intersection point is outside the triangle, against vertex (0 point)
+                assertNull(triangle.findIntersections(new Ray(new Point(1,2,3), new Vector(-11,1.86,4.14))),
+                        "ERROR: The point supposed to be outside the triangle, against vertex - not working as expected");
+
+                // =============== Boundary Values Tests ==================
+                // TC10: The point is on edge (0 point)
+                assertNull(triangle.findIntersections(new Ray(new Point(1,2,3), new Vector(-5,0.14,-0.15))),
+                        "ERROR: The point supposed to be on edge - not working as expected");
+
+                // TC11: The point is in vertex (0 point)
+                assertNull(triangle.findIntersections(new Ray(new Point(1,2,3), new Vector(-1, -1,-3))),
+                        "ERROR: The point supposed to be in vertex - not working as expected");
+
+                // TC12: The point is on edge's continuation (0 point)
+                assertNull(triangle.findIntersections(new Ray(new Point(1, 0, 0), new Vector(-10,1.57,3.43))),
+                        "ERROR: The point supposed to be on edge's continuation - not working as expected");
+        }
 }

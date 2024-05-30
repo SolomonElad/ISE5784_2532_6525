@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * Class Cylinder represents a cylinder in the 3D space
  * The class is based on the Tube class
@@ -29,11 +31,16 @@ public class Cylinder extends Tube {
             return axis.getDirection().scale(-1);
 
         //case 2 - point is on second base
-        if(point.equals(axis.getHead().add(axis.getDirection().scale(height))) ||
-                axis.getDirection().dotProduct(point.subtract(axis.getHead().add(axis.getDirection().scale(height))))==0)
+        if(point.equals(axis.getPoint(height)) ||
+                axis.getDirection().dotProduct(point.subtract(axis.getPoint(height)))==0)
             return axis.getDirection();
 
         //case 3 - point is on the side
         return super.getNormal(point);
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

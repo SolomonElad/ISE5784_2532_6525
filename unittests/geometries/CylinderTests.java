@@ -42,4 +42,8 @@ class CylinderTests {
                 "ERROR: Cylinder.getNormal - incorrect tube vector for far-from-axis base's center");
 
     }
+
+    @Test
+    void testFindIntersections() {
+    }
 }

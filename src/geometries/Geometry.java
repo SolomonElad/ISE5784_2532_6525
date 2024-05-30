@@ -8,7 +8,7 @@ import primitives.Vector;
  * in the 3D space
  * the interface has one method getNormal(Point)
  */
-public interface Geometry {
+public interface Geometry extends Intersectable {
     /**
      * method to get the normal of the geometry in specific point
      * @param point point on the geometry's surface
