@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * Testing Polygons
+ *
  * @author Dan
  */
 public class PolygonTests {
@@ -22,7 +23,9 @@ public class PolygonTests {
      */
     private final double DELTA = 0.000001;
 
-    /** Test method for {@link geometries.Polygon#Polygon(primitives.Point...)}. */
+    /**
+     * Test method for {@link geometries.Polygon#Polygon(primitives.Point...)}.
+     */
     @Test
     public void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
@@ -70,13 +73,15 @@ public class PolygonTests {
 
     }
 
-    /** Test method for {@link geometries.Polygon#getNormal(primitives.Point)}. */
+    /**
+     * Test method for {@link geometries.Polygon#getNormal(primitives.Point)}.
+     */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: There is a simple single test here - using a quad
         Point[] pts =
-                { new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0), new Point(-1, 1, 1) };
+                {new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0), new Point(-1, 1, 1)};
         Polygon pol = new Polygon(pts);
         // ensure there are no exceptions
         assertDoesNotThrow(() -> pol.getNormal(new Point(0, 0, 1)), "");
@@ -92,32 +97,32 @@ public class PolygonTests {
 
     @Test
     void testFindIntersections() {
-        Polygon polygon = new Polygon(new Point(-1,-2,4), new Point(-1,5,-3), new Point(4,2,-5), new Point(4,-2,-1));
+        Polygon polygon = new Polygon(new Point(-1, -2, 4), new Point(-1, 5, -3), new Point(4, 2, -5), new Point(4, -2, -1));
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: The intersection point is inside the polygon - simple (1 point)
-        assertEquals(List.of(new Point(3.5,-1.55,-0.95)), polygon.findIntersections(new Ray(new Point(1,2,3), new Vector(2.5,-3.55,-3.95))),
+        assertEquals(List.of(new Point(3.5, -1.55, -0.95)), polygon.findIntersections(new Ray(new Point(1, 2, 3), new Vector(2.5, -3.55, -3.95))),
                 "ERROR: The intersection point supposed to be inside the polygon - not working as expected");
 
         // TC02: No intersection point is outside the polygon, against edge (0 point)
-        assertNull(polygon.findIntersections(new Ray(new Point(1,2,3), new Vector(6,-12,-3))),
+        assertNull(polygon.findIntersections(new Ray(new Point(1, 2, 3), new Vector(6, -12, -3))),
                 "ERROR: No intersection point supposed to be against the polygon edge - not working as expected");
 
         // TC03: No intersection point is outside the polygon, against vertex (0 point)
-        assertNull(polygon.findIntersections(new Ray(new Point(3,2,8), new Vector(-10,-9,-6))),
+        assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(-10, -9, -6))),
                 "ERROR: No intersection point supposed to be against the polygon's vertex - not working as expected");
 
         // =============== Boundary Values Tests ==================
         // TC11: The point is on edge (0 point)
-        assertNull(polygon.findIntersections(new Ray(new Point(3,2,8), new Vector(1,-2,-11))),
+        assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(1, -2, -11))),
                 "ERROR: No intersection point supposed to be on edge - not working as expected");
 
         // TC12: The point is in vertex (0 point)
-        assertNull(polygon.findIntersections(new Ray(new Point(3,2,8), new Vector(1,0,-13))),
+        assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(1, 0, -13))),
                 "ERROR: No intersection point supposed to be in vertex - not working as expected");
 
         // TC13: The point is on edge's continuation (0 point)
-        assertNull(polygon.findIntersections(new Ray(new Point(3,2,8), new Vector(-8,-4,0))),
+        assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(-8, -4, 0))),
                 "ERROR: No intersection point supposed to be on edge's continuation - not working as expected");
     }
 }

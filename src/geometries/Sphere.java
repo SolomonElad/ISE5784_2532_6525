@@ -12,13 +12,17 @@ import static primitives.Util.alignZero;
 /**
  * Class Sphere represents a sphere in the 3D space
  * The class is based on the abstract RadialGeometry class
- * */
+ */
 public class Sphere extends RadialGeometry {
 
-    /** the center of the sphere */
+    /**
+     * the center of the sphere
+     */
     private final Point center;
 
-    /** Constructor for a sphere in the 3D space
+    /**
+     * Constructor for a sphere in the 3D space
+     *
      * @param center the center of the sphere
      * @param radius the radius of the sphere
      */

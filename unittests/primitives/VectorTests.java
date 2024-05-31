@@ -110,7 +110,7 @@ class VectorTests {
         // cant happen because we have a constructor that checks if the vector is zero - this not valid
 
         // TC12: Simple cross product test - parallel vectors - should throw exception
-       assertThrows(IllegalArgumentException.class,
+        assertThrows(IllegalArgumentException.class,
                 () -> new Vector(1, 2, 3).crossProduct(new Vector(-2, -4, -6)),
                 "ERROR: crossProduct for opposite direction vectors does not throw an exception");
     }
@@ -152,7 +152,7 @@ class VectorTests {
     void testNormalize() {
         // ============ Equivalence Partitions Tests ==============
         // TC01: Simple normalize test
-        assertEquals(new Vector(0 , 0.6, 0.8),
+        assertEquals(new Vector(0, 0.6, 0.8),
                 new Vector(0, 3, 4).normalize(),
                 "ERROR: normalize does not work correctly");
 

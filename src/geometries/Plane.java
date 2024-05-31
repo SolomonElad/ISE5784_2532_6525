@@ -1,6 +1,7 @@
 package geometries;
 
 import primitives.*;
+
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -9,14 +10,16 @@ import static primitives.Util.isZero;
 /**
  * Class Plane represents a plane in the 3D space
  * The plane is represented by point and vector
- * */
+ */
 public class Plane implements Geometry {
 
     private final Point q;
     private final Vector normal;
 
-    /** Constructor for a plane in the 3D space - creates a normalized vector
+    /**
+     * Constructor for a plane in the 3D space - creates a normalized vector
      * using the cross product of two vectors on the plane
+     *
      * @param point1 the first point on the plane
      * @param point2 the second point on the plane
      * @param point3 the third point on the plane
@@ -26,8 +29,10 @@ public class Plane implements Geometry {
         this.normal = point1.subtract(point2).crossProduct(point1.subtract(point3)).normalize();
     }
 
-    /** Constructor for a plane in the 3D space
-     * @param point the point on the plane
+    /**
+     * Constructor for a plane in the 3D space
+     *
+     * @param point  the point on the plane
      * @param vector the normal of the plane
      */
     public Plane(Point point, Vector vector) {
@@ -37,6 +42,7 @@ public class Plane implements Geometry {
 
     /**
      * method to get the normal of the plane
+     *
      * @return the normal of the plane
      */
     public Vector getNormal() {

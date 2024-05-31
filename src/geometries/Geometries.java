@@ -6,16 +6,18 @@ import primitives.Ray;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 /**
  * Class Geometries represents a collection of geometries in the 3D space
  * The class is based on the Intersectable
  */
 public class Geometries implements Intersectable {
     final private List<Intersectable> geometries = new LinkedList<Intersectable>();
+
     /**
      * Default empty Constructor for a collection of geometries in the 3D space
      */
-    public Geometries() {};
+    public Geometries() {} ;
 
     /**
      * Constructor for a collection of geometries in the 3D space
