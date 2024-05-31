@@ -66,7 +66,7 @@ class TriangleTests {
                         "ERROR: The point supposed to be in vertex - not working as expected");
 
                 // TC12: The point is on edge's continuation (0 point)
-                assertNull(triangle.findIntersections(new Ray(new Point(1, 0, 0), new Vector(-10,1.57,3.43))),
+                assertNull(triangle.findIntersections(new Ray(new Point(3,0,0), new Vector(3,-4,-1))),
                         "ERROR: The point supposed to be on edge's continuation - not working as expected");
         }
 }

@@ -45,22 +45,13 @@ public class Sphere extends RadialGeometry {
             return null;
 
         double th = alignZero(sqrt(radius * radius - d * d));
-        double t1 = alignZero(tm + th);
-        double t2 = alignZero(tm - th);
 
-        if (t1 > 0 && t2 > 0) {
-            // return the points in the correct order - the first point is the closest to the ray's head
-            if (t1 > t2)
-                return List.of(ray.getPoint(t1), ray.getPoint(t2));
-            return List.of(ray.getPoint(t2), ray.getPoint(t1));
-        }
+        double t2 = alignZero(tm + th);
+        if (t2 <= 0)
+            return null; // both t1 and t2 are not positive, because t1 < t2 (always) - no intersections
 
-        if (t1 > 0)
-            return List.of(ray.getPoint(t1));
-
-        if (t2 > 0)
-            return List.of(ray.getPoint(t2));
-
-        return null;
+        double t1 = alignZero(tm - th);
+        // return the points in the correct order - the first point is the closest to the ray's head
+        return t1 <= 0 ? List.of(ray.getPoint(t2)) : List.of(ray.getPoint(t1), ray.getPoint(t2));
     }
 }

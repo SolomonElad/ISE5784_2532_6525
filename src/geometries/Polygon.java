@@ -100,25 +100,28 @@ public class Polygon implements Geometry {
        }
 
       List<Vector> NVectors = new java.util.ArrayList<>(List.of());
-
       for (int i = 0; i < size; i++) {
          NVectors.add(Vectors.get(i).crossProduct(Vectors.get((i + 1) % size).normalize()));
       }
 
       Vector direction = ray.getDirection();
       // if we get same sign for all dotProducts, the intersection is inside the triangle
-
-      int i = 0;
-      int k = 0;
+      int positiveCounter = 0;
+      int NegativeCounter = 0;
       for (Vector vector : NVectors) {
          double dotProduct = alignZero(direction.dotProduct(vector));
+         // early stop - if one or more are 0.0 – no intersections with the polygon
+         if (isZero(dotProduct))
+            return null;
+
          if (dotProduct > 0)
-            i++;
+            positiveCounter++;
+
          if (dotProduct < 0)
-            k++;
+            NegativeCounter++;
       }
 
-      if (i == NVectors.size() || k == NVectors.size())
+      if (positiveCounter == size || NegativeCounter == size)
          // delegation to plane
          return plane.findIntersections(ray);
 
