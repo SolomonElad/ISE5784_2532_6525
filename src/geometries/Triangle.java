@@ -61,15 +61,15 @@ public class Triangle extends Polygon {
         // the intersection point with the plane - we check if it is inside the triangle via barycentric coordinates
         Point point = points.getFirst();
 
-        // if the intersection point is a vertex of the triangle, it is not considered an intersection
-        if (point.equals(vertices.get(0)) || point.equals(vertices.get(1)) || point.equals(vertices.get(2))) {
-            return null;
-        }
-
         // defining the vertices of the triangle
         Point A = vertices.get(0);
         Point B = vertices.get(1);
         Point C = vertices.get(2);
+
+        // if the intersection point is a vertex of the triangle, it is not considered an intersection
+        if (point.equals(A) || point.equals(B) || point.equals(C)) {
+            return null;
+        }
 
         // calculate the vectors from the first vertex of the triangle to the other vertices e.g(A->B, A->C)
         // and from the first vertex to the intersection point e.g(A->P)
