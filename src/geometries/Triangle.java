@@ -25,6 +25,10 @@ public class Triangle extends Polygon {
         super(point1, point2, point3);
     }
 
+    /**
+     * alternative implementation of findIntersections method, based on side relativity to edges of the triangle:
+     */
+//    @Override
 //    public List<Point> findIntersections(Ray ray) {
 //        // if there are no intersections with the triangle's plane, there are no intersections with the triangle
 //        if (plane.findIntersections(ray) == null)
