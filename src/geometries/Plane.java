@@ -62,13 +62,13 @@ public class Plane implements Geometry {
         }
 
         // if the ray is parallel to the plane, there is no intersection
-        double nv = normal.dotProduct(ray.getDirection());
+        double nv = alignZero(normal.dotProduct(ray.getDirection()));
         // can't divide by zero
         if (isZero(nv)) {
             return null;
         }
 
-        // if the ray is included in the plane, there is no intersection
+        // if the ray's head is included in the plane, there is no intersection
         double nQMinusHead = alignZero(this.normal.dotProduct(q.subtract(ray.getHead())));
         if (isZero(nQMinusHead)) {
             return null;

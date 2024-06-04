@@ -37,11 +37,11 @@ class GeometriesTests {
         assertNull(geometries.findIntersections(new Ray(new Point(6, 7, 8), new Vector(2, 0, -2))),
                 "ERROR: no geometry is intersected - not working as expected");
 
-        // TC03: one geometry is intersected (2 points)
+        // TC03: one geometry is intersected (1 point)
         assertEquals(1, geometries.findIntersections(new Ray(new Point(6, 7, 8), new Vector(0, -1, -2))).size(),
                 "ERROR: one geometry is intersected - not working as expected");
 
-        // TC04: all geometries are intersected (4 points)
+        // TC04: all geometries are intersected (7 points)
         assertEquals(7, geometries.findIntersections(new Ray(new Point(1, 4, 8), new Vector(0, -3, -7.8))).size(),
                 "ERROR: all geometries are intersected - not working as expected");
     }

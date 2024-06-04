@@ -94,7 +94,9 @@ public class PolygonTests {
             assertEquals(0d, result.dotProduct(pts[i].subtract(pts[i == 0 ? 3 : i - 1])), DELTA,
                     "Polygon's normal is not orthogonal to one of the edges");
     }
-
+    /**
+     * Test method for {@link geometries.Polygon#findIntersections(Ray)}.
+     */
     @Test
     void testFindIntersections() {
         Polygon polygon = new Polygon(new Point(-1, -2, 4), new Point(-1, 5, -3), new Point(4, 2, -5), new Point(4, -2, -1));
@@ -104,11 +106,11 @@ public class PolygonTests {
         assertEquals(List.of(new Point(3.5, -1.55, -0.95)), polygon.findIntersections(new Ray(new Point(1, 2, 3), new Vector(2.5, -3.55, -3.95))),
                 "ERROR: The intersection point supposed to be inside the polygon - not working as expected");
 
-        // TC02: No intersection point is outside the polygon, against edge (0 point)
+        // TC02: The intersection point is outside the polygon, against edge (0 point)
         assertNull(polygon.findIntersections(new Ray(new Point(1, 2, 3), new Vector(6, -12, -3))),
                 "ERROR: No intersection point supposed to be against the polygon edge - not working as expected");
 
-        // TC03: No intersection point is outside the polygon, against vertex (0 point)
+        // TC03: The intersection point is outside the polygon, against vertex (0 point)
         assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(-10, -9, -6))),
                 "ERROR: No intersection point supposed to be against the polygon's vertex - not working as expected");
 

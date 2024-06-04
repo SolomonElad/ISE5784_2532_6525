@@ -38,10 +38,14 @@ class TriangleTests {
                 "ERROR: Triangle.getNormal - does not return a normalized vector");
     }
 
+    /**
+     * test method for {@link geometries.Triangle#findIntersections(Ray)}
+     * Note: tests assume plane intersection exist, as it was already tested in parent class (Plane)
+     */
     @Test
     void testFindIntersections() {
         Triangle triangle = new Triangle(new Point(0, 1, 0), new Point(-6, 6, 1), new Point(-7, 3, 5));
-
+        
         // ============ Equivalence partitions Tests ==============
         // TC01: The intersection point is in the triangle (1 point)
         assertEquals(List.of(new Point(-4, 4, 1)),

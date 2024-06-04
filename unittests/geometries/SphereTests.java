@@ -131,7 +131,7 @@ class SphereTests {
                 "ERROR: Ray starts after the tangent point - not working as expected");
 
         // **** Group: Special cases
-        // TC22: Ray's line is outside, ray is orthogonal to ray start to sphere's center line (0 points)
+        // TC22: Ray's line is outside, ray is orthogonal to sphere's center line (0 points)
         assertNull(sphere.findIntersections(new Ray(new Point(0, 0, 2), v100)),
                 "ERROR: Ray's line is outside, ray is orthogonal to ray start to sphere's center line " +
                         "- not working as expected");

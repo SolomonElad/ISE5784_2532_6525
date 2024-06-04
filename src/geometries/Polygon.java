@@ -114,22 +114,15 @@ public class Polygon implements Geometry {
 
         Vector direction = ray.getDirection();
         // if we get same sign for all dotProducts, the intersection is inside the triangle
-        int positiveCounter = 0;
-        int NegativeCounter = 0;
+        boolean sign = alignZero(direction.dotProduct(NVectors.getFirst())) > 0;
         for (Vector vector : NVectors) {
             double dotProduct = alignZero(direction.dotProduct(vector));
             // early stop - if one or more are 0.0 – no intersections with the polygon
-            if (isZero(dotProduct)) return null;
-
-            if (dotProduct > 0) positiveCounter++;
-
-            if (dotProduct < 0) NegativeCounter++;
+            //also, if sign is different from the first dotProduct - no intersections with the polygon
+            if (isZero(dotProduct) || ((boolean)(dotProduct > 0)!=sign))
+                return null;
         }
-
-        if (positiveCounter == size || NegativeCounter == size)
-            // delegation to plane
             return plane.findIntersections(ray);
 
-        return null;
     }
 }
