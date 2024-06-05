@@ -123,6 +123,5 @@ public class Polygon implements Geometry {
                 return null;
         }
             return plane.findIntersections(ray);
-
     }
 }
