@@ -53,7 +53,6 @@ public class Triangle extends Polygon {
 //
 //        return null;
 //    }
-
     @Override
     public List<Point> findIntersections(Ray ray) {
         // If there is no intersection with the plane containing the triangle, there is no intersection with the triangle
@@ -66,55 +65,39 @@ public class Triangle extends Polygon {
         Point point = points.getFirst();
 
         // defining the vertices of the triangle
-        Point A = vertices.get(0);
-        Point B = vertices.get(1);
-        Point C = vertices.get(2);
+        Point a = vertices.get(0);
+        Point b = vertices.get(1);
+        Point c = vertices.get(2);
 
         // if the intersection point is a vertex of the triangle, it is not considered an intersection
-        if (point.equals(A) || point.equals(B) || point.equals(C)) {
+        if (point.equals(a) || point.equals(b) || point.equals(c)) {
             return null;
         }
 
-        // calculate the vectors from the first vertex of the triangle to the other vertices e.g(A->B, A->C)
-        // and from the first vertex to the intersection point e.g(A->P)
-        // u = A -> B
-        Vector u = B.subtract(A);
-        // v = A -> C
-        Vector v = C.subtract(A);
-        // w = A -> P
-        Vector w = point.subtract(A);
+        Vector ab, bc, ap, bp, cp, ac;
+        double area, alpha, beta, gamma;
 
-        // we check if the point is between the two vectors we created - if not, there is no point of intersection in the triangle
-        // calculate cross products to check orientation
-        Vector vCrossW = v.crossProduct(w);
-        Vector vCrossU = v.crossProduct(u);
-        // if the dot product of the cross products is negative, the point is outside the triangle
-        if (vCrossW.dotProduct(vCrossU) < 0) {
+        try {
+            ab = b.subtract(a); // a->b
+            bc = c.subtract(b); // b->c
+            ac = c.subtract(a); // a->c
+            ap = point.subtract(a); // a->q
+            bp = point.subtract(b); // b->q
+            cp = point.subtract(c); // c->q
+            // Alpha, beta, and gamma are calculated by the ratio between the respective
+            // triangles and the entire one.
+            area = ab.crossProduct(ac).length();
+            alpha = ab.crossProduct(ap).length() / area;
+            beta = bc.crossProduct(bp).length() / area;
+            gamma = ac.crossProduct(cp).length() / area;
+            // Point is inside if all the coordinates are positive
+
+            return (alignZero(alpha) > 0 && alignZero(beta) > 0 && alignZero(gamma) > 0
+                    && isZero(gamma + beta + alpha - 1)) ? points : null;
+
+            // if we get cross product of two vectors that make Zero vector, the point is not considered inside the triangle
+        } catch (IllegalArgumentException e) {
             return null;
         }
-
-        // repeat the check for the other vector pairs
-        Vector uCrossW = u.crossProduct(w);
-        Vector uCrossV = u.crossProduct(v);
-        if (uCrossW.dotProduct(uCrossV) < 0) {
-            return null;
-        }
-
-        // calculate the denominator for barycentric coordinates
-        double denominator = alignZero(uCrossV.length());
-        if (isZero(denominator))
-            return null;
-
-        double x = alignZero(vCrossW.length() / denominator);
-        double y = alignZero(uCrossW.length() / denominator);
-
-        // check if the point is inside the triangle using barycentric coordinates
-        // x and y express the linear combination of two vectors that produce two sides of the triangle,
-        // according to the relationships we will know if the point is in the triangle or not
-        if (x > 0 && y > 0 && (x + y) < 1) {
-            return points;
-        }
-
-        return null;
     }
 }

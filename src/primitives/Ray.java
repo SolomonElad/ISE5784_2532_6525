@@ -1,23 +1,27 @@
 package primitives;
 
+import java.util.List;
 import java.util.Objects;
 
 import static primitives.Util.isZero;
 
-/** Class Ray represents a ray in the 3D space
+/**
+ * Class Ray represents a ray in the 3D space
  * The class is based on the Point and Vector classes
- * */
+ */
 public class Ray {
     /* The head of the ray */
     private final Point head;
     /* The direction of the ray */
     private final Vector direction;
 
-    /** Constructor for a ray in the 3D space
-     * @param head the head of the ray
+    /**
+     * Constructor for a ray in the 3D space
+     *
+     * @param head      the head of the ray
      * @param direction the direction of the ray
-     * the direction vector is normalized
-     * */
+     *                  the direction vector is normalized
+     */
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
@@ -39,27 +43,59 @@ public class Ray {
                 '}';
     }
 
-    /** Get the direction of the ray
+    /**
+     * Get the direction of the ray
+     *
      * @return the direction of the ray
-     * */
+     */
     public Vector getDirection() {
         return direction;
     }
 
-    /** Get the head of the ray
+    /**
+     * Get the head of the ray
+     *
      * @return the head of the ray
-     * */
+     */
     public Point getHead() {
         return head;
     }
 
-    /** Calculate a point on the rays line at a distance t from the head
+    /**
+     * Calculate a point on the rays line at a distance t from the head
+     *
      * @param t the distance from the head
      * @return the point on the rays line at the distance t from the head
-     * */
+     */
     public Point getPoint(double t) {
         if (isZero(t))
             return head;
         return head.add(direction.scale(t));
+    }
+
+
+    /**
+     * Find the closest point to the head of the ray from a list of points
+     *
+     * @param pointList the list of points to search in
+     * @return the closest point to the head of the ray (Point)
+     */
+    public Point findClosestPoint(List<Point> pointList) {
+        if (pointList == null || pointList.isEmpty()) {
+            return null;
+        }
+
+        Point closestPoint = null;
+        double minDistance = Double.MAX_VALUE;
+        double pointDistance;
+
+        for (var pointInList : pointList) {
+            pointDistance = this.head.distance(pointInList);
+            if (pointDistance < minDistance) {
+                minDistance = pointDistance;
+                closestPoint = pointInList;
+            }
+        }
+        return closestPoint;
     }
 }

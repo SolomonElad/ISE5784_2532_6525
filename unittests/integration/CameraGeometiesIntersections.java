@@ -13,6 +13,9 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 import renderer.Camera;
+import renderer.ImageWriter;
+import renderer.SimpleRayTracer;
+import scene.Scene;
 
 import java.util.List;
 
@@ -21,15 +24,12 @@ import java.util.List;
  */
 public class CameraGeometiesIntersections {
 
-
     Camera.Builder builder = new Camera.Builder().setVpDistance(1)
             .setVpSize(3, 3).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0));
     Camera camera;
 
-
     /**
      * help function - count all  camera-rays intersections with a given geometry
-     *
      * @param geometry - given geometry
      * @return number of overall intersections
      */
@@ -60,7 +60,9 @@ public class CameraGeometiesIntersections {
         Sphere sphere0dot5 = new Sphere(new Point(0, 0, 1), 0.5);
 
         //TC01: a sphere with a radius of 1 (2 intersection points expected)
-        camera = builder.setLocation(new Point(0, 0, 1)).build();
+        camera = builder.setLocation(new Point(0, 0, 1))
+                .setRayTracer(new SimpleRayTracer(new Scene("Test")))
+                .setImageWriter(new ImageWriter("Test", 1, 1)).build();
         assertEquals(2, countIntersections(sphere1),
                 "Error - integration test for camera sphere intersections - wrong number of intersections");
 
@@ -93,7 +95,10 @@ public class CameraGeometiesIntersections {
         Plane plane3 = new Plane(new Point(-1.5, 1.5, -1), new Point(0, 1.5, -10), new Point(-1.5, -1.5, -1));
 
         //TC01: a plane of z=a format - parallel to view plane(9 intersection points expected)
-        camera = builder.setLocation(new Point(0, 0, 1)).build();
+        camera = builder.setLocation(new Point(0, 0, 1))
+                 .setRayTracer(new SimpleRayTracer(new Scene("Test")))
+                .setImageWriter(new ImageWriter("Test", 1, 1))
+                .build();
         assertEquals(9, countIntersections(plane1),
                 "Error - integration test for camera plane intersections - wrong number of intersections");
 
@@ -116,7 +121,9 @@ public class CameraGeometiesIntersections {
         Triangle triangle2 = new Triangle(new Point(0,20,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
 
         //TC01: a triangle with 1 intersection point (1 intersection points expected)
-        camera = builder.setLocation(new Point(0,0,1)).build();
+        camera = builder.setLocation(new Point(0,0,1))
+                 .setRayTracer(new SimpleRayTracer(new Scene("Test")))
+                .setImageWriter(new ImageWriter("Test", 1, 1)).build();
         assertEquals(1,countIntersections(triangle1),
                 "Error - integration test for camera triangle intersections - wrong number of intersections");
 
