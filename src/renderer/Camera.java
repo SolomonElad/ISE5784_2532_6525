@@ -23,6 +23,42 @@ public class Camera implements Cloneable {
     }
 
     /**
+     * getter for camera's po Point
+     *
+     * @return camera's po Point
+     */
+    public Point getP0() {
+        return p0;
+    }
+
+    /**
+     * getter for camera's vTo Vector
+     *
+     * @return camera's vTo Vector
+     */
+    public Vector getvTo() {
+        return vTo;
+    }
+
+    /**
+     * getter for camera's vUp Vector
+     *
+     * @return camera's vUp Vector
+     */
+    public Vector getvUp() {
+        return vUp;
+    }
+
+    /**
+     * getter for camera's vRight Vector
+     *
+     * @return camera's vRight Vector
+     */
+    public Vector getvRight() {
+        return vRight;
+    }
+
+    /**
      * getter for camera's distance from view plane
      *
      * @return camera's distance from view plane
@@ -151,7 +187,6 @@ public class Camera implements Cloneable {
 
 
     //////////////////////////// Builder implementation ////////////////////////////
-
     /**
      * ____Inner Class____
      * class builder is used for building a camera object. it is used due to the large amount of parameters
@@ -165,6 +200,15 @@ public class Camera implements Cloneable {
          */
         public Builder() {
             this.camera = new Camera();
+        }
+
+        /**
+         * builder constructor - initializes a new camera with a given camera object
+         *
+         * @param camera - camera object to be used as a base
+         */
+        public Builder(Camera camera) {
+            this.camera = camera;
         }
 
         /**
