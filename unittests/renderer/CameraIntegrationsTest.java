@@ -1,4 +1,4 @@
-package integration;
+package renderer;
 
 import geometries.Intersectable;
 import geometries.Plane;
@@ -12,9 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
-import renderer.Camera;
-import renderer.ImageWriter;
-import renderer.SimpleRayTracer;
 import scene.Scene;
 
 import java.util.List;
@@ -22,7 +19,7 @@ import java.util.List;
 /**
  * integration tests for camera ray intersections with geometries
  */
-public class CameraGeometiesIntersections {
+public class CameraIntegrationsTest {
 
     Camera.Builder builder = new Camera.Builder().setVpDistance(1)
             .setVpSize(3, 3).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0));
