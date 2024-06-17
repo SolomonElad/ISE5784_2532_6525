@@ -3,6 +3,7 @@ package renderer;
 import geometries.Plane;
 import primitives.*;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -275,7 +276,6 @@ public class Camera implements Cloneable {
          *
          * @param pTo - point of direction
          * @return builder object with the updated camera
-         * TODO:think logic at test later on
          */
         public Builder setFocusPoint(Point pTo) {
             //vTo will be towards pTo
@@ -284,15 +284,22 @@ public class Camera implements Cloneable {
             camera.vTo = pTo.subtract(camera.p0).normalize();
 
             //calculate vUp and vRight - if vTo is parallel to xy plane, vUp will simply face up
-            if (isZero(camera.vTo.getZ())) {
+            if (isZero(pTo.getZ()-camera.getP0().getZ())) {
                 camera.vUp = new Vector(0, 0, 1);
+            }
+
+            else if (camera.vTo.equals(new Vector(0, 0, 1))){
+                camera.vUp = new Vector(0, 1, 0);
+            }
+            else if (camera.vTo.equals(new Vector(0, 0, -1))) {
+                camera.vUp = new Vector(0, -1, 0);
             }
             //else, using the plane vto is on that is orthogonal to xy plane, calculate vRight
             // then produce vUp
             else {
                 camera.vRight = new Plane(camera.p0, pTo, new Point(pTo.getX(), pTo.getY(), camera.p0.getZ()))
                         .getNormal().normalize();
-                camera.vUp = camera.vRight.crossProduct(camera.vUp).normalize();
+                camera.vUp = camera.vTo.crossProduct(camera.vRight).normalize();
             }
             return this;
         }
@@ -302,10 +309,39 @@ public class Camera implements Cloneable {
          *
          * @param theta - degree of rotation
          * @return builder object with the updated camera
-         * TODO:think logic at test later on, add check for input
          */
         public Builder setRotation(double theta) {
+            //rotate vUp and vRight vectors around vTo vector using rotation matrix
+            double cosTheta = Math.cos(Math.toRadians(theta));
+            double sinTheta = Math.sin(Math.toRadians(theta));
+            Vector vUp = camera.vUp;
+            double[][] rotationMatrix = getRotationMatrix(cosTheta, sinTheta);
+            //multiply rotation matrix by vUp and vRight vectors
+            camera.vUp = new Vector(
+                    alignZero(rotationMatrix[0][0] * vUp.getX() + rotationMatrix[0][1] * vUp.getY() + rotationMatrix[0][2] * vUp.getZ()),
+                    alignZero(rotationMatrix[1][0] * vUp.getX() + rotationMatrix[1][1] * vUp.getY() + rotationMatrix[1][2] * vUp.getZ()),
+                    alignZero(rotationMatrix[2][0] * vUp.getX() + rotationMatrix[2][1] * vUp.getY() + rotationMatrix[2][2] * vUp.getZ())
+            ).normalize();
+            //vRight is orthogonal to vTo and vUp - will be calculated at the final build
+
             return this;
+        }
+
+        private double[][] getRotationMatrix(double cosTheta, double sinTheta) {
+            Vector vTo = camera.vTo;
+            //build rotation matrix - rotation clockwise around vTo vector
+            return new double[][]{
+                    {cosTheta + vTo.getX() * vTo.getX() * (1 - cosTheta),
+                            vTo.getX() * vTo.getY() * (1 - cosTheta) - vTo.getZ() * sinTheta,
+                            vTo.getX() * vTo.getZ() * (1 - cosTheta) + vTo.getY() * sinTheta},
+                    {vTo.getY() * vTo.getX() * (1 - cosTheta) + vTo.getZ() * sinTheta,
+                            cosTheta + vTo.getY() * vTo.getY() * (1 - cosTheta),
+                            vTo.getY() * vTo.getZ() * (1 - cosTheta) - vTo.getX() * sinTheta},
+                    {vTo.getZ() * vTo.getX() * (1 - cosTheta) - vTo.getY() * sinTheta,
+                            vTo.getZ() * vTo.getY() * (1 - cosTheta) + vTo.getX() * sinTheta,
+                            cosTheta + vTo.getZ() * vTo.getZ() * (1 - cosTheta)}
+            };
+
         }
 
         /**
