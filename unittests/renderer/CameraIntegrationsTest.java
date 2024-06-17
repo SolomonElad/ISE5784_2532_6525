@@ -20,7 +20,6 @@ import java.util.List;
  * integration tests for camera ray intersections with geometries
  */
 public class CameraIntegrationsTest {
-
     Camera.Builder builder = new Camera.Builder().setVpDistance(1)
             .setVpSize(3, 3).setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0));
     Camera camera;
@@ -49,7 +48,6 @@ public class CameraIntegrationsTest {
      */
     @Test
     void testCameraSphereIntersection() {
-
         Sphere sphere1 = new Sphere(new Point(0, 0, -3), 1);
         Sphere sphere2dot5 = new Sphere(new Point(0, 0, -2.5), 2.5);
         Sphere sphere2 = new Sphere(new Point(0, 0, -2), 2);
@@ -86,7 +84,6 @@ public class CameraIntegrationsTest {
      */
     @Test
     void testCameraPlaneIntersection() {
-
         Plane plane1 = new Plane(new Point(0, 0, -1), new Point(0, 1, -1), new Point(1, 0, -1));
         Plane plane2 = new Plane(new Point(0, 0, -2.7), new Point(0, 1, -2.5), new Point(1, 0, -2));
         Plane plane3 = new Plane(new Point(-1.5, 1.5, -1), new Point(0, 1.5, -10), new Point(-1.5, -1.5, -1));
@@ -113,7 +110,6 @@ public class CameraIntegrationsTest {
      */
     @Test
     void testCameraTriangleIntersection() {
-
         Triangle triangle1 = new Triangle(new Point(0,1,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
         Triangle triangle2 = new Triangle(new Point(0,20,-2),new Point(1,-1,-2),new Point(-1,-1,-2));
 
