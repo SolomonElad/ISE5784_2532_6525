@@ -18,6 +18,7 @@ public class Camera implements Cloneable {
 
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
+    private Point pCenter;
 
     // private constructor - camera is built using a builder
     private Camera() {
@@ -108,7 +109,7 @@ public class Camera implements Cloneable {
      */
     public Ray constructRay(int nX, int nY, int j, int i) {
         //place point in center of view plane
-        Point PIJ = p0.add(vTo.scale(distance));
+        Point PIJ = pCenter;
         double yI = -((i - (double) (nY - 1) / 2) * height / nY);
         double xJ = ((j - (double) (nX - 1) / 2) * width / nX);
         //move PIJ only of distances xJ & yI are not zero
@@ -402,7 +403,7 @@ public class Camera implements Cloneable {
             //adding computed resources
             //NOTE: algebra-wise, vRight does not need to be normalized because camera's vTo and vUp are
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
-
+            camera.pCenter = camera.p0.add(camera.vTo.scale(camera.distance));
             //return clone of final camera object
             try {
                 return (Camera) camera.clone();

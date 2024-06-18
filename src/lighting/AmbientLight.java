@@ -41,6 +41,16 @@ public class AmbientLight {
     }
 
     /**
+     * Constructor that creates an ambient light source with a given intensity.
+     *
+     * @param Ia The intensity of the ambient light source
+     * default Ka = 1.0
+     */
+    public AmbientLight(Color Ia) {
+        this.intensity = Ia;
+    }
+
+    /**
      * GetIntensity - returns the intensity of the ambient light source.
      *
      * @return The intensity of the ambient light source (Color)

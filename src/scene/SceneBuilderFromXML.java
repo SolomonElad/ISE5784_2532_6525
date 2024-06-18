@@ -25,15 +25,16 @@ public class SceneBuilderFromXML {
     /**
      * sets the scene from an XML file
      * @param filename the name of the XML file to set the scene from
-     * @param scene the scene to set to
      */
-    public static void setFromFile(String filename, Scene scene) {
+    public static Scene setFromFile(String filename) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(filename);
 
             Element sceneElement = doc.getDocumentElement();
+
+            Scene scene = new Scene(sceneElement.getAttribute("name"));
 
             // Set background color
             String[] rgb = sceneElement.getAttribute("background-color").split(" ");
@@ -45,7 +46,7 @@ public class SceneBuilderFromXML {
             if (ambientElement.hasAttribute("ka")) {
                 scene.setAmbientLight(new AmbientLight(new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2])), Double.parseDouble(ambientElement.getAttribute("ka"))));
             } else {
-                scene.setAmbientLight(new AmbientLight(new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2])), 1.0));
+                scene.setAmbientLight(new AmbientLight(new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]))));
             }
 
             // Set geometries
@@ -93,9 +94,11 @@ public class SceneBuilderFromXML {
                     }
                 }
             }
+            return scene;
         } catch (
                 Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
