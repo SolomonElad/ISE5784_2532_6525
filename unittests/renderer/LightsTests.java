@@ -34,16 +34,16 @@ public class LightsTests {
       .setVpSize(200, 200).setVpDistance(1000);
 
    /** Shininess value for most of the geometries in the tests */
-   private static final int     SHININESS               = 301;
+   private  final int     SHININESS               = 301;
    /** Diffusion attenuation factor for some of the geometries in the tests */
-   private static final double  KD                      = 0.5;
+   private  final double  KD                      = 0.5;
    /** Diffusion attenuation factor for some of the geometries in the tests */
-   private static final Double3 KD3                     = new Double3(0.2, 0.6, 0.4);
+   private  final Double3 KD3                     = new Double3(0.2, 0.6, 0.4);
 
    /** Specular attenuation factor for some of the geometries in the tests */
-   private static final double  KS                      = 0.5;
+   private  final double  KS                      = 0.5;
    /** Specular attenuation factor for some of the geometries in the tests */
-   private static final Double3 KS3                     = new Double3(0.2, 0.4, 0.3);
+   private  final Double3 KS3                     = new Double3(0.2, 0.4, 0.3);
 
    /** Material for some of the geometries in the tests */
    private final Material       material                = new Material().setKd(KD3).setKs(KS3).setShininess(SHININESS);
@@ -128,6 +128,21 @@ public class LightsTests {
          .writeToImage();
    }
 
+   /** Produce a picture of a sphere lighted by both a point light and a directional light */
+    @Test
+    public void spherePointDirectional() {
+        scene1.geometries.add(sphere);
+        scene1.lights.add(new PointLight(new Color(500, 800, 0), new Point(50, 50, 25))
+                .setKl(0.001).setKq(0.0002));
+        scene1.lights.add(new DirectionalLight(sphereLightColor, sphereLightDirection));
+
+        camera1.setImageWriter(new ImageWriter("lightSpherePointDirectional", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
+
    /** Produce a picture of two triangles lighted by a directional light */
    @Test
    public void trianglesDirectional() {
@@ -165,6 +180,21 @@ public class LightsTests {
          .renderImage()
          .writeToImage();
    }
+
+   /** Produce a picture of two triangles lighted by both a point light and a spotlight */
+    @Test
+    public void trianglesPointSpot() {
+        scene2.geometries.add(triangle1, triangle2);
+        scene2.lights.add(new PointLight(new Color(200, 250, 800), new Point(-40, -25, -90))
+                .setKl(0.001).setKq(0.0001));
+        scene2.lights.add(new SpotLight(new Color(800,100,0), new Point(30, 10, -70), new Vector(-1, 2, -2))
+                .setKl(0.001).setKq(0.0001));
+
+        camera2.setImageWriter(new ImageWriter("lightTrianglesPointSpot", 500, 500))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
 
 //   /** Produce a picture of a sphere lighted by a narrow spotlight */
 //   @Test

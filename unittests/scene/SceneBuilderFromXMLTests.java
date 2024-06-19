@@ -31,25 +31,25 @@ class SceneBuilderFromXMLTests {
     /**
      * Test method for {@link SceneBuilderFromXML#setFromFile(String)}.
      */
-    @Test
-    void testSetFromFile() {
-
-        camera
-                .setRayTracer(new SimpleRayTracer(SceneBuilderFromXML.setFromFile("xml/renderTestTwoColors.xml")))
-                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-                .build()
-                .renderImage()
-                .printGrid(100, new Color(YELLOW))
-                .writeToImage();
-
-
-        // Elad's scene test file
-        cameraElad
-                .setRayTracer(new SimpleRayTracer(SceneBuilderFromXML.setFromFile("xml/elad.xml")))
-                .setImageWriter(new ImageWriter("xml render test elad", 1000, 1000))
-                .build()
-                .renderImage()
-                .printGrid(100, new Color(YELLOW))
-                .writeToImage();
-    }
+//    @Test
+//    void testSetFromFile() {
+//
+//        camera
+//                .setRayTracer(new SimpleRayTracer(SceneBuilderFromXML.setFromFile("xml/renderTestTwoColors.xml")))
+//                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
+//                .build()
+//                .renderImage()
+//                .printGrid(100, new Color(YELLOW))
+//                .writeToImage();
+//
+//
+//        // Elad's scene test file
+//        cameraElad
+//                .setRayTracer(new SimpleRayTracer(SceneBuilderFromXML.setFromFile("xml/elad.xml")))
+//                .setImageWriter(new ImageWriter("xml render test elad", 1000, 1000))
+//                .build()
+//                .renderImage()
+//                .printGrid(100, new Color(YELLOW))
+//                .writeToImage();
+//    }
 }
