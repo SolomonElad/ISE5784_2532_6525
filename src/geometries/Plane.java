@@ -11,7 +11,7 @@ import static primitives.Util.isZero;
  * Class Plane represents a plane in the 3D space
  * The plane is represented by point and vector
  */
-public class Plane implements Geometry {
+public class Plane extends Geometry {
 
     private final Point q;
     private final Vector normal;
@@ -55,7 +55,7 @@ public class Plane implements Geometry {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // if the ray starts on the plane, there is no intersection
         if (q.equals(ray.getHead())) {
             return null;
@@ -80,6 +80,6 @@ public class Plane implements Geometry {
             return null;
         }
 
-        return List.of(ray.getPoint(t));
+        return List.of(new GeoPoint(this,ray.getPoint(t)));
     }
 }

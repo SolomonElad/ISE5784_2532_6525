@@ -10,9 +10,8 @@ import primitives.Double3;
  * Ambient light is used to simulate the light that is reflected from the
  * environment and is not affected by the direction of the surface.
  */
-public class AmbientLight {
+public class AmbientLight extends Light {
 
-    private final Color intensity;
     /**
      * A constant ambient light source that is not affected by the direction of the
      * surface.
@@ -27,7 +26,7 @@ public class AmbientLight {
      * @param Ka The coefficient of the ambient light source (Double3)
      */
     public AmbientLight(Color Ia, Double3 Ka) {
-        this.intensity = Ia.scale(Ka);
+        super(Ia.scale(Ka));
     }
 
     /**
@@ -37,25 +36,17 @@ public class AmbientLight {
      * @param Ka The coefficient of the ambient light source (Double)
      */
     public AmbientLight(Color Ia, Double Ka) {
-        this.intensity = Ia.scale(Ka);
+        super(Ia.scale(Ka));
     }
 
     /**
-     * Constructor that creates an ambient light source with a given intensity.
+     * Constructor that creates an ambient light source with a given intensity and default coefficient of 1.
      *
      * @param Ia The intensity of the ambient light source
      * default Ka = 1.0
      */
     public AmbientLight(Color Ia) {
-        this.intensity = Ia;
+        super(Ia);
     }
 
-    /**
-     * GetIntensity - returns the intensity of the ambient light source.
-     *
-     * @return The intensity of the ambient light source (Color)
-     */
-    public Color getIntensity() {
-        return this.intensity;
-    }
 }
