@@ -187,7 +187,7 @@ public class LightsTests {
         scene2.geometries.add(triangle1, triangle2);
         scene2.lights.add(new PointLight(new Color(200, 250, 800), new Point(-40, -25, -90))
                 .setKl(0.001).setKq(0.0001));
-        scene2.lights.add(new SpotLight(new Color(800,100,0), new Point(30, 10, -70), new Vector(-1, 2, -2))
+        scene2.lights.add(new SpotLight(new Color(800,101,0), new Point(30, 10, -70), new Vector(-1, 2, -2))
                 .setKl(0.001).setKq(0.0001));
 
         camera2.setImageWriter(new ImageWriter("lightTrianglesPointSpot", 500, 500))
