@@ -15,7 +15,6 @@ import static primitives.Util.isZero;
 /**
  * The SimpleRayTracer class is a simple ray tracer that traces rays in a scene
  * and returns the color of the intersection point.
- * ttyuijok
  */
 public class SimpleRayTracer extends RayTracerBase {
     /**
