@@ -1,8 +1,6 @@
 package lighting;
 
-import primitives.Color;
-import primitives.Point;
-import primitives.Vector;
+import primitives.*;
 
 /**
  * Abstract class LightSource is the base class for all light sources in the scene
@@ -24,5 +22,4 @@ public interface LightSource {
      * NOTE: the vector is normalized
      */
     Vector getL(Point p);
-
 }

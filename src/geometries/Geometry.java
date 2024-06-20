@@ -21,6 +21,7 @@ public abstract class Geometry extends Intersectable {
      * The material of the geometry
      */
     private Material material = new Material();
+
     /**
      * method to get the normal of the geometry in specific point
      * @param point point on the geometry's surface
@@ -35,6 +36,7 @@ public abstract class Geometry extends Intersectable {
     public Color getEmission() {
         return emission;
     }
+
     /**
      * method to set the emission of the geometry
      * @param emission the emission of the geometry

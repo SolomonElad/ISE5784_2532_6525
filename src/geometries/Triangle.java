@@ -94,7 +94,7 @@ public class Triangle extends Polygon {
 
             return (alignZero(alpha) > 0 && alignZero(beta) > 0 && alignZero(gamma) > 0
                     && isZero(gamma + beta + alpha - 1)) ?
-                    List.of(new GeoPoint(this,points.get(0))) : null;
+                    List.of(new GeoPoint(this,points.getFirst())) : null;
 
             // if we get cross product of two vectors that make Zero vector, the point is not considered inside the triangle
         } catch (IllegalArgumentException e) {

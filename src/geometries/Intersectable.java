@@ -17,6 +17,7 @@ public abstract class Intersectable {
         return geoList == null ? null
                 : geoList.stream().map(gp -> gp.point).toList();
     }
+
     /**
      * method to find the GeoIntersections of the object with a ray
      * @param ray the ray to find the intersections with
@@ -32,7 +33,6 @@ public abstract class Intersectable {
      * @return list of the intersections points
      */
     protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
-
 
     /**
      * class GeoPoint is a class to represent a point of intersection

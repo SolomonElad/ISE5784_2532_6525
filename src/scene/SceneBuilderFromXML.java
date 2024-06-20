@@ -25,6 +25,7 @@ public class SceneBuilderFromXML {
     /**
      * sets the scene from an XML file
      * @param filename the name of the XML file to set the scene from
+     * @return the scene set from the XML file
      */
     public static Scene setFromFile(String filename) {
         try {

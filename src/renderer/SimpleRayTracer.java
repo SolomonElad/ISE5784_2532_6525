@@ -78,6 +78,7 @@ public class SimpleRayTracer extends RayTracerBase {
     private Double3 calcDiffusive(Material material, double nl) {
     return material.kD.scale(Math.abs(nl));
     }
+
     /**
      * calculate the specular effect of the intersection point
      *

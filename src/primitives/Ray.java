@@ -73,7 +73,6 @@ public class Ray {
         return head.add(direction.scale(t));
     }
 
-
     /**
      * Find the closest point to the head of the ray from a list of points
      *

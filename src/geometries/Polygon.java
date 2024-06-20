@@ -122,6 +122,6 @@ public class Polygon extends Geometry {
             if (isZero(dotProduct) || ((boolean)(dotProduct > 0)!=sign))
                 return null;
         }
-            return List.of(new GeoPoint(this,plane.findIntersections(ray).get(0)));
+            return List.of(new GeoPoint(this,plane.findIntersections(ray).getFirst()));
     }
 }
