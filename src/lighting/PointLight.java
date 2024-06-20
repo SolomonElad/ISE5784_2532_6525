@@ -45,10 +45,10 @@ public class PointLight extends Light implements LightSource {
      * @param kL The linear attenuation factor
      * @return The point light source
      */
-    public PointLight setKl(double kL) {
-        this.kL = kL;
-        return this;
-    }
+//    public PointLight setKl(double kL) {
+//        this.kL = kL;
+//        return this;
+//    }
 
     /**
      * Setter for the quadratic attenuation factors of the light
@@ -60,11 +60,10 @@ public class PointLight extends Light implements LightSource {
         return this;
     }
 
-
     @Override
     public Color getIntensity(Point p) {
         double d = position.distance(p);
-        return intensity.scale(1d / (kC + kL * d + kQ * d * d));
+        return this.getIntensity().scale(1d / (kC + kL * d + kQ * d * d));
     }
 
     @Override

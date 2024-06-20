@@ -10,6 +10,7 @@ import geometries.Intersectable.GeoPoint;
 import java.util.List;
 
 import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * The SimpleRayTracer class is a simple ray tracer that traces rays in a scene
@@ -49,11 +50,11 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color of the intersection point
      */
     private Color calcLocalEffects(GeoPoint gp, Ray ray) {
-        Color color = gp.geometry.getEmission();
+        Color color = Color.BLACK;
         Vector n = gp.geometry.getNormal(gp.point);
         Vector v = ray.getDirection();
         double nv = alignZero(n.dotProduct(v));
-        if (nv == 0) return color;
+        if (isZero(nv)) return color;
         Material material = gp.geometry.getMaterial();
         for (LightSource lightSource : scene.lights) {
             Vector l = lightSource.getL(gp.point);
