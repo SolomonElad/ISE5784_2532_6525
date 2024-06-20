@@ -36,16 +36,16 @@ public class LightsTests {
       .setVpSize(200, 200).setVpDistance(1000);
 
    /** Shininess value for most of the geometries in the tests */
-   private  final int     SHININESS               = 301;
+   private static final int     SHININESS               = 301;
    /** Diffusion attenuation factor for some of the geometries in the tests */
    private  final double  KD                      = 0.5;
    /** Diffusion attenuation factor for some of the geometries in the tests */
-   private  final Double3 KD3                     = new Double3(0.2, 0.6, 0.4);
+   private static final Double3 KD3                     = new Double3(0.2, 0.6, 0.4);
 
    /** Specular attenuation factor for some of the geometries in the tests */
-   private  final double  KS                      = 0.5;
+   private static final double  KS                      = 0.5;
    /** Specular attenuation factor for some of the geometries in the tests */
-   private  final Double3 KS3                     = new Double3(0.2, 0.4, 0.3);
+   private static final Double3 KS3                     = new Double3(0.2, 0.4, 0.3);
 
    /** Material for some of the geometries in the tests */
    private final Material       material                = new Material().setKd(KD3).setKs(KS3).setShininess(SHININESS);

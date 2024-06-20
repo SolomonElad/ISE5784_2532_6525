@@ -39,7 +39,6 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Color calcColor(GeoPoint point,Ray ray) {
         return this.scene.ambientLight.getIntensity()
-                .add(point.geometry.getEmission())
                 .add(calcLocalEffects(point,ray));
     }
 

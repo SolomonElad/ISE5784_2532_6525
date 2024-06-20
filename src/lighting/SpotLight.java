@@ -4,7 +4,6 @@ import primitives.Color;
 import primitives.Point;
 import primitives.Vector;
 
-import static java.lang.Math.max;
 import static primitives.Util.alignZero;
 
 /**
@@ -52,12 +51,12 @@ public class SpotLight extends PointLight{
 
     @Override
     public SpotLight setKl(double kL) {
-        return (SpotLight) super.setKc(kL);
+        return (SpotLight) super.setKl(kL);
     }
 
     @Override
     public SpotLight setKq(double kQ) {
-        return (SpotLight) super.setKc(kQ);
+        return (SpotLight) super.setKq(kQ);
     }
 
 //    @Override
@@ -68,7 +67,7 @@ public class SpotLight extends PointLight{
     @Override
     public Color getIntensity(Point p) {
         double dotProduct = alignZero(direction.dotProduct(getL(p)));
-        return dotProduct <= 0 ? Color.BLACK : super.getIntensity().scale(Math.pow(dotProduct, narrowness));
+        return dotProduct <= 0 ? Color.BLACK : super.getIntensity(p).scale(Math.pow(dotProduct, narrowness));
     }
 
     @Override
