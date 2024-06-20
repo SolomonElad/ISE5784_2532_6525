@@ -15,6 +15,7 @@ import static primitives.Util.isZero;
 /**
  * The SimpleRayTracer class is a simple ray tracer that traces rays in a scene
  * and returns the color of the intersection point.
+ * ttyuijok
  */
 public class SimpleRayTracer extends RayTracerBase {
     /**
@@ -40,6 +41,7 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Color calcColor(GeoPoint point,Ray ray) {
         return this.scene.ambientLight.getIntensity()
+                .add(point.geometry.getEmission())
                 .add(calcLocalEffects(point,ray));
     }
 
