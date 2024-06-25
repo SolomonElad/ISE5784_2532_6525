@@ -91,8 +91,9 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color of the specular effect
      */
     private Double3 calcSpecular(Material material, Vector n, Vector l, double nl, Vector v) {
-        Vector r = l.subtract(n.scale(2 * nl));
-        double vr = alignZero(v.dotProduct(r)*-1);
-        return material.kS.scale(vr > 0 ? Math.pow(vr, material.shininess) : 0);
+        // R = 2(N*L)*N - L = l.subtract(n.scale(2 * nl))
+        // VR = V*R = alignZero(v.dotProduct(r)*-1)
+        return material.kS.scale(Math.max(
+                0,Math.pow(alignZero(v.dotProduct(l.subtract(n.scale(2 * nl)))*-1), material.shininess)));
     }
 }

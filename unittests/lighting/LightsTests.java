@@ -299,16 +299,24 @@ public class LightsTests {
                 .renderImage()
                 .writeToImage();
 
-        camera1.setImageWriter(new ImageWriter("Rotation90", 500, 500))
-                .setRotation(90)
+        camera1.setImageWriter(new ImageWriter("Rotation30", 500, 500))
+                .setRotation(30)
                 .build()
                 .renderImage()
                 .writeToImage();
 
-        camera1.setImageWriter(new ImageWriter("Rotation30", 500, 500))
-                .setRotation(300)
+        camera1.setImageWriter(new ImageWriter("setFocus_30_40", 500, 500))
+                .setFocusPoint(sphereCenter.add(new Vector(30,40,0)))
                 .build()
                 .renderImage()
                 .writeToImage();
+
+        camera1.setImageWriter(new ImageWriter("setFocus_40_50", 500, 500))
+                .setFocusPoint(sphereCenter.add(new Vector(40,50,0)))
+                .build()
+                .renderImage()
+                .writeToImage();
+
+
     }
 }
