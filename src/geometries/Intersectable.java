@@ -1,5 +1,7 @@
 package geometries;
+
 import primitives.*;
+
 import java.util.List;
 
 /**
@@ -9,6 +11,7 @@ import java.util.List;
 public abstract class Intersectable {
     /**
      * method to find the intersections of the object with a ray
+     *
      * @param ray the ray to find the intersections with
      * @return list of the intersections points
      */
@@ -20,19 +23,33 @@ public abstract class Intersectable {
 
     /**
      * method to find the GeoIntersections of the object with a ray
+     *
      * @param ray the ray to find the intersections with
      * @return list of the intersections points
      */
     public final List<GeoPoint> findGeoIntersections(Ray ray) {
-        return findGeoIntersectionsHelper(ray);
+        return findGeoIntersectionsHelper(ray, Double.POSITIVE_INFINITY);
     }
 
     /**
-     * method to find the GeoIntersections of the object with a ray
-     * @param ray the ray to find the intersections with
+     * method to find the GeoIntersections of the object with a ray and a maximum distance
+     *
+     * @param ray         the ray to find the intersections with
+     * @param maxDistance the maximum distance to find the intersections
      * @return list of the intersections points
      */
-    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray);
+    public final List<GeoPoint> findGeoIntersections(Ray ray, double maxDistance) {
+        return findGeoIntersectionsHelper(ray, maxDistance);
+    }
+
+    /**
+     * abstract method to find the GeoIntersections of the object with a ray and a maximum distance
+     *
+     * @param ray         the ray to find the intersections with
+     * @param maxDistance the maximum distance to find the intersections
+     * @return list of the intersections points
+     */
+    protected abstract List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance);
 
     /**
      * class GeoPoint is a class to represent a point of intersection
@@ -50,8 +67,9 @@ public abstract class Intersectable {
 
         /**
          * Constructor for a GeoPoint
+         *
          * @param geometry the geometry of the point
-         * @param point the point of the intersection
+         * @param point    the point of the intersection
          */
         public GeoPoint(Geometry geometry, Point point) {
             this.geometry = geometry;
@@ -60,13 +78,14 @@ public abstract class Intersectable {
 
         /**
          * override for the equals method
-         * @param o the object to compare to
+         *
+         * @param obg the object to compare to
          */
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            return o instanceof GeoPoint &&
-                    (geometry.equals(((GeoPoint) o).geometry) && point.equals(((GeoPoint) o).point));
+        public boolean equals(Object obg) {
+            if (this == obg) return true;
+            return (obg instanceof GeoPoint geoPoint)
+                    && this.point.equals(geoPoint.point) && this.geometry.equals(geoPoint.geometry);
         }
 
         /**

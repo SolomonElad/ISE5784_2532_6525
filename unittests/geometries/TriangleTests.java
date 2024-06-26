@@ -38,14 +38,14 @@ class TriangleTests {
                 "ERROR: Triangle.getNormal - does not return a normalized vector");
     }
 
+    Triangle triangle = new Triangle(new Point(0, 1, 0), new Point(-6, 6, 1), new Point(-7, 3, 5));
+
     /**
      * test method for {@link geometries.Triangle#findIntersections(Ray)}
      * Note: tests assume plane intersection exist, as it was already tested in parent class (Plane)
      */
     @Test
     void testFindIntersections() {
-        Triangle triangle = new Triangle(new Point(0, 1, 0), new Point(-6, 6, 1), new Point(-7, 3, 5));
-        
         // ============ Equivalence partitions Tests ==============
         // TC01: The intersection point is in the triangle (1 point)
         assertEquals(List.of(new Point(-4, 4, 1)),
@@ -72,5 +72,39 @@ class TriangleTests {
         // TC12: The point is on edge's continuation (0 point)
         assertNull(triangle.findIntersections(new Ray(new Point(3, 0, 0), new Vector(3, -4, -1))),
                 "ERROR: The point supposed to be on edge's continuation - not working as expected");
+    }
+
+    /**
+     * Test method for {@link geometries.Geometries#findGeoIntersections(Ray, double)}.
+     */
+    @Test
+    void testFindGeoIntersections() {
+        // ============ Equivalence partitions Tests ==============
+        // TC01: The intersection point is in the triangle (1 point) - with maxDistance
+        assertEquals(List.of(new Point(-4, 4, 1)),
+                triangle.findGeoIntersectionsHelper(new Ray(new Point(1, 2, 3), new Vector(-5, 2, -2)),6).stream().map(p -> p.point).toList(),
+                "ERROR: The point supposed to be in the triangle - not working as expected  - maxDistance is 6");
+
+        // TC02: The intersection point is outside the triangle, against edge (0 point) - with maxDistance
+        assertNull(triangle.findGeoIntersectionsHelper(new Ray(new Point(1, 2, 3), new Vector(-9, 3, 0)),7),
+                "ERROR: The point supposed to be outside the triangle, against edge - not working as expected - maxDistance is 7");
+
+        // TC03: The intersection point is outside the triangle, against vertex (0 point) - with maxDistance
+        assertNull(triangle.findGeoIntersectionsHelper(new Ray(new Point(1, 2, 3), new Vector(-11, 1.86, 4.14)),3),
+                "ERROR: The point supposed to be outside the triangle, against vertex - not working as expected - maxDistance is 3");
+
+        // =============== Boundary Values Tests ==================
+        // TC10: The point is on edge (0 point) - with maxDistance
+        assertNull(triangle.findGeoIntersectionsHelper(new Ray(new Point(1, 2, 3), new Vector(-5, 0.14, -0.15)),5),
+                "ERROR: The point supposed to be on edge - not working as expected - maxDistance is 5");
+
+        // TC11: The point is in vertex (0 point) - with maxDistance
+        assertNull(triangle.findGeoIntersectionsHelper(new Ray(new Point(1, 2, 3), new Vector(-1, -1, -3)),4),
+                "ERROR: The point supposed to be in vertex - not working as expected - maxDistance is 4");
+
+        // TC12: The point is on edge's continuation (0 point) - with maxDistance
+        assertNull(triangle.findGeoIntersectionsHelper(new Ray(new Point(3, 0, 0), new Vector(3, -4, -1)),1),
+                "ERROR: The point supposed to be on edge's continuation - not working as expected - maxDistance is 1");
+
     }
 }

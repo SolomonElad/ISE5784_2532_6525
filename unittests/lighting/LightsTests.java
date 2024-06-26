@@ -316,7 +316,5 @@ public class LightsTests {
                 .build()
                 .renderImage()
                 .writeToImage();
-
-
     }
 }

@@ -94,12 +94,14 @@ public class PolygonTests {
             assertEquals(0d, result.dotProduct(pts[i].subtract(pts[i == 0 ? 3 : i - 1])), DELTA,
                     "Polygon's normal is not orthogonal to one of the edges");
     }
+
+    Polygon polygon = new Polygon(new Point(-1, -2, 4), new Point(-1, 5, -3), new Point(4, 2, -5), new Point(4, -2, -1));
+
     /**
      * Test method for {@link geometries.Polygon#findIntersections(Ray)}.
      */
     @Test
     void testFindIntersections() {
-        Polygon polygon = new Polygon(new Point(-1, -2, 4), new Point(-1, 5, -3), new Point(4, 2, -5), new Point(4, -2, -1));
 
         // ============ Equivalence Partitions Tests ==============
         // TC01: The intersection point is inside the polygon - simple (1 point)
@@ -126,5 +128,40 @@ public class PolygonTests {
         // TC13: The point is on edge's continuation (0 point)
         assertNull(polygon.findIntersections(new Ray(new Point(3, 2, 8), new Vector(-8, -4, 0))),
                 "ERROR: No intersection point supposed to be on edge's continuation - not working as expected");
+    }
+
+    /**
+     * Test method for {@link geometries.Geometries#findGeoIntersections(Ray, double)}.
+     */
+    @Test
+    void testFindGeoIntersections() {
+        // ============ Equivalence Partitions Tests ==============
+        // TC01: The intersection point is inside the polygon - simple (1 point) - with maxDistance
+        assertEquals(List.of(new Point(3.5, -1.55, -0.95)),
+                List.of(polygon.findGeoIntersections(new Ray(new Point(1, 2, 3), new Vector(2.5, -3.55, -3.95)),
+                        10).getFirst().point),
+                "ERROR: The intersection point supposed to be inside the polygon - not working as expected - maxDistance is 10");
+
+        // TC02: The intersection point is outside the polygon, against edge (0 point) - with maxDistance
+        assertNull(polygon.findGeoIntersections(new Ray(new Point(1, 2, 3), new Vector(6, -12, -3)), 10),
+                "ERROR: No intersection point supposed to be against the polygon edge - not working as expected - maxDistance is 10");
+
+        // TC03: The intersection point is outside the polygon, against vertex (0 point) - with maxDistance
+        assertNull(polygon.findGeoIntersections(new Ray(new Point(3, 2, 8), new Vector(-10, -9, -6)), 10),
+                "ERROR: No intersection point supposed to be against the polygon's vertex - not working as expected - maxDistance is 10");
+
+        // =============== Boundary Values Tests ==================
+        // TC11: The point is on edge (0 point) - with maxDistance
+        assertNull(polygon.findGeoIntersections(new Ray(new Point(3, 2, 8), new Vector(1, -2, -11)), 10),
+                "ERROR: No intersection point supposed to be on edge - not working as expected - maxDistance is 10");
+
+        // TC12: The point is in vertex (0 point) - with maxDistance
+        assertNull(polygon.findGeoIntersections(new Ray(new Point(3, 2, 8), new Vector(1, 0, -13)), 10),
+                "ERROR: No intersection point supposed to be in vertex - not working as expected - maxDistance is 10");
+
+        // TC13: The point is on edge's continuation (0 point) - with maxDistance
+        assertNull(polygon.findGeoIntersections(new Ray(new Point(3, 2, 8), new Vector(-8, -4, 0)), 10),
+                "ERROR: No intersection point supposed to be on edge's continuation - not working as expected - maxDistance is 10");
+
     }
 }

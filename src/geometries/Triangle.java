@@ -54,15 +54,15 @@ public class Triangle extends Polygon {
 //        return null;
 //    }
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // If there is no intersection with the plane containing the triangle, there is no intersection with the triangle
-        List<Point> points = plane.findIntersections(ray);
+        List<GeoPoint> points = plane.findGeoIntersections(ray, maxDistance);
         if (points == null) {
             return null;
         }
 
         // the intersection point with the plane - we check if it is inside the triangle via barycentric coordinates
-        Point point = points.getFirst();
+        Point point = points.getFirst().point;
 
         // defining the vertices of the triangle
         Point a = vertices.get(0);
@@ -94,7 +94,7 @@ public class Triangle extends Polygon {
 
             return (alignZero(alpha) > 0 && alignZero(beta) > 0 && alignZero(gamma) > 0
                     && isZero(gamma + beta + alpha - 1)) ?
-                    List.of(new GeoPoint(this,points.getFirst())) : null;
+                    List.of(new GeoPoint(this,points.getFirst().point)) : null;
 
             // if we get cross product of two vectors that make Zero vector, the point is not considered inside the triangle
         } catch (IllegalArgumentException e) {

@@ -93,11 +93,10 @@ public class Polygon extends Geometry {
         return plane.getNormal();
     }
 
-
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray){
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // if there are no intersections with the polygon's plane, there are no intersections with the polygon
-        var intersections = this.plane.findIntersections(ray);
+        List<GeoPoint> intersections = this.plane.findGeoIntersections(ray, maxDistance);
         if (intersections == null) return null;
 
         // calculate the vectors from the ray's head to the vertices of the polygon
@@ -123,6 +122,6 @@ public class Polygon extends Geometry {
             if (isZero(dotProduct) || ((boolean)(dotProduct > 0)!=sign))
                 return null;
         }
-            return List.of(new GeoPoint(this,intersections.getFirst()));
+            return List.of(new GeoPoint(this,intersections.getFirst().point));
     }
 }

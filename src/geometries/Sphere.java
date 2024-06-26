@@ -37,7 +37,7 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    public List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         if (center.equals(ray.getHead())) {
             return List.of(new GeoPoint(this,center.add(ray.getDirection().scale(radius))));
         }
@@ -51,10 +51,13 @@ public class Sphere extends RadialGeometry {
         double th = alignZero(sqrt(radius * radius - d * d));
 
         double t2 = alignZero(tm + th);
-        if (t2 <= 0)
+        if (t2 <= 0 || alignZero(t2 - maxDistance) > 0)
             return null; // both t1 and t2 are not positive, because t1 < t2 (always) - no intersections
 
         double t1 = alignZero(tm - th);
+        if (alignZero(t1 - maxDistance) > 0)
+            return null;
+
         // return the points in the correct order - the first point is the closest to the ray's head
         return t1 <= 0 ? List.of(new GeoPoint(this,ray.getPoint(t2)))
                 : List.of(new GeoPoint(this,ray.getPoint(t1)), new GeoPoint(this,ray.getPoint(t2)));

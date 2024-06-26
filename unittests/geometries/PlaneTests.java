@@ -64,12 +64,13 @@ class PlaneTests {
                 "ERROR: Plane.getNormal - does not return a normalized vector");
     }
 
+    Plane plane = new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1));
+
     /**
      * test method for {@link geometries.Plane#findIntersections(Ray)}
      */
     @Test
     void testFindIntersections() {
-        Plane plane = new Plane(new Point(1, 0, 0), new Point(0, 1, 0), new Point(0, 0, 1));
 
         // ============ Equivalence Partitions Tests ==============
         //TC01: Ray intersects the plane, starts outside the plane, neither parallel nor perpendicular to the plane (1 point)
@@ -121,5 +122,61 @@ class PlaneTests {
                 "ERROR: Ray is neither orthogonal nor parallel to ray " +
                         "and begins in the same point which appears as reference point in the plane - " +
                         "does not work as expected");
+    }
+
+    /**
+     * Test method for {@link geometries.Geometries#findGeoIntersections(Ray, double)}.
+     */
+    @Test
+    void testFindGeoIntersections() {
+        // ============ Equivalence Partitions Tests ==============
+        //TC01: Ray intersects the plane, starts outside the plane, neither parallel nor perpendicular to the plane (1 point) - with maxDistance
+        assertEquals(List.of(new Point(0.8, 0.2, 0)),
+                List.of(plane.findGeoIntersections(new Ray(new Point(2, 5, 6), new Vector(-1, -4, -5)), 10).getFirst().point),
+                "Error: Ray intersects the plane - does not work as expected - maxDistance is 10");
+
+        //TC02: Ray does not intersect the plane, starts outside the plane, neither parallel nor perpendicular to the plane (0 point) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(2, 5, 6), new Vector(1, 1, 1)), 10),
+                "Error: Ray does not intersects the plane - does not work as expected - maxDistance is 10");
+
+        // =============== Boundary Values Tests ==================
+        // **** Group: Ray is parallel to the plane (0 point)
+        //TC10: The ray not included in the plane - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(2, 5, 6), new Vector(1, 1, -2)), 1),
+                "ERROR: Ray is parallel to the plane, and the ray not included in the plane " +
+                        "- does not work as expected - maxDistance is 1");
+
+        //TC11: The ray included in the plane (0 point ~infinite points) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(2, 0, -1), new Vector(-1, 1, 0)), 10),
+                "ERROR: Ray is parallel to the plane, and the ray included in the plane - " +
+                        "does not work as expected - maxDistance is 10");
+
+        //TC12: Head point is before the plane (1 point) - with maxDistance
+        assertEquals(List.of(new Point(0, 0, 1)),
+                List.of(plane.findGeoIntersections(new Ray(new Point(-1, -1, 0), new Vector(2, 2, 2)), 10).getFirst().point),
+                "ERROR: Ray is orthogonal to the plane, according to the head point, before the plane - " +
+                        "does not work as expected - maxDistance is 10");
+
+        //TC13: Head point is in the plane (0 point) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(0, 0, 1), new Vector(1, 1, 1)), 7),
+                "ERROR: Ray is orthogonal to the plane, according to the head point, in the plane - " +
+                        "- does not work as expected - maxDistance is 7");
+
+        //TC14: Head point is after the plane (0 point) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(1, 1, 2), new Vector(1, 1, 1)), 4),
+                "ERROR: Ray is orthogonal to the plane, according to the head point, after the plane - " +
+                        "does not work as expected - maxDistance is 4");
+
+        // **** Group: Ray is neither orthogonal nor parallel to the plane
+        //TC15: Ray begins at the plane (0 point) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(2, -2, 1), new Vector(-1, 3, 1)), 5),
+                "ERROR: Ray is neither orthogonal nor parallel to ray and begin at the plane - " +
+                        "does not work as expected - maxDistance is 5");
+
+        //TC16: Ray begins in the same point which appears as reference point in the plane (0 point) - with maxDistance
+        assertNull(plane.findGeoIntersections(new Ray(new Point(1, 0, 0), new Vector(0, 1, 2)), 1),
+                "ERROR: Ray is neither orthogonal nor parallel to ray " +
+                        "and begins in the same point which appears as reference point in the plane - " +
+                        "does not work as expected - maxDistance is 1");
     }
 }
