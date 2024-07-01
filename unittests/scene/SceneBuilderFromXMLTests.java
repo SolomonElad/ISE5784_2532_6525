@@ -1,13 +1,18 @@
 package scene;
 
+import geometries.Plane;
+import geometries.Sphere;
+import geometries.Triangle;
+import lighting.AmbientLight;
+import lighting.DirectionalLight;
+import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
-import primitives.Color;
-import primitives.Point;
-import primitives.Vector;
+import primitives.*;
 import renderer.Camera;
 import renderer.ImageWriter;
 import renderer.SimpleRayTracer;
 
+import static java.awt.Color.BLUE;
 import static java.awt.Color.YELLOW;
 
 /**
@@ -31,8 +36,8 @@ class SceneBuilderFromXMLTests {
     /**
      * Test method for {@link SceneBuilderFromXML#setFromFile(String)}.
      */
-//    @Test
-//    void testSetFromFile() {
+    @Test
+    void testSetFromFile() {
 //
 //        camera
 //                .setRayTracer(new SimpleRayTracer(SceneBuilderFromXML.setFromFile("xml/renderTestTwoColors.xml")))
@@ -51,5 +56,6 @@ class SceneBuilderFromXMLTests {
 //                .renderImage()
 //                .printGrid(100, new Color(YELLOW))
 //                .writeToImage();
-//    }
+//                }
+    }
 }

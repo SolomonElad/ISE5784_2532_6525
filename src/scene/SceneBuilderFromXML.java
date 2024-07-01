@@ -22,6 +22,9 @@ public class SceneBuilderFromXML {
         return new Double3(Double.parseDouble(xyz[0]), Double.parseDouble(xyz[1]), Double.parseDouble(xyz[2]));
     }
 
+    static Material material = new Material().setKd(0.9).setKs(0.9).setShininess(100);
+    static Color color = new Color(250, 215, 0);
+
     /**
      * sets the scene from an XML file
      * @param filename the name of the XML file to set the scene from
@@ -67,7 +70,7 @@ public class SceneBuilderFromXML {
                             Point p0 = new Point(getDouble3(geometryElement.getAttribute("p0")));
                             Point p1 = new Point(getDouble3(geometryElement.getAttribute("p1")));
                             Point p2 = new Point(getDouble3(geometryElement.getAttribute("p2")));
-                            scene.geometries.add(new Triangle(p0, p1, p2));
+                            scene.geometries.add(new Triangle(p0, p1, p2).setMaterial(material).setEmission(color));
                             break;
                         case "plane":
                             Point q0 = new Point(getDouble3(geometryElement.getAttribute("p0")));

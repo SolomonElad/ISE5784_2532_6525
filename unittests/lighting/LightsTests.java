@@ -305,14 +305,14 @@ public class LightsTests {
                 .renderImage()
                 .writeToImage();
 
-        camera1.setImageWriter(new ImageWriter("setFocus_30_40", 500, 500))
-                .setFocusPoint(sphereCenter.add(new Vector(30,40,0)))
+        camera1.setImageWriter(new ImageWriter("setFocus_20_10_0", 500, 500))
+                .setFocusPoint(sphereCenter.add(new Vector(20,10,0)))
                 .build()
                 .renderImage()
                 .writeToImage();
 
-        camera1.setImageWriter(new ImageWriter("setFocus_40_50", 500, 500))
-                .setFocusPoint(sphereCenter.add(new Vector(40,50,0)))
+        camera1.setImageWriter(new ImageWriter("setFocus_60_50_0", 500, 500))
+                .setFocusPoint(sphereCenter.add(new Vector(60,50,0)))
                 .build()
                 .renderImage()
                 .writeToImage();

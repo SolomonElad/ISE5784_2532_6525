@@ -80,7 +80,7 @@ class CameraTest {
         assertEquals(new Vector(-0.8, 0, 0.6), camera.getvUp(), "Bad vUp");
         assertEquals(new Vector(0, -1, 0), camera.getvRight(), "Bad vRight");
 
-        //= =============== Boundary Values Tests =================
+        // =============== Boundary Values Tests =================
         // BVA01: focus point has the same z value as the camera
         camera = cameraBuilder
                 .setFocusPoint(new Point(3, 4, 0)).build();

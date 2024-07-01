@@ -15,6 +15,9 @@ public class Ray {
     /* The direction of the ray */
     private final Vector direction;
 
+    /* The delta value for move the head of the Ray*/
+    private static final double DELTA = 0.1;
+
     /**
      * Constructor for a ray in the 3D space
      *
@@ -25,6 +28,19 @@ public class Ray {
     public Ray(Point head, Vector direction) {
         this.head = head;
         this.direction = direction.normalize();
+    }
+
+    /**
+     * Constructor for a ray in the 3D space
+     *
+     * @param head      the head of the ray
+     * @param direction the direction of the ray
+     * @param normal    the normal vector to the head of the ray on the intersected geometry
+     */
+    public Ray(Point head, Vector direction, Vector normal) {
+       Vector delta = normal.scale(normal.dotProduct(direction) > 0 ? DELTA : -DELTA);
+       this.head = head.add(delta);
+       this.direction = direction.normalize();
     }
 
     @Override
