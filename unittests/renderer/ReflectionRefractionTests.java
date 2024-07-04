@@ -5,6 +5,7 @@ package renderer;
 
 import static java.awt.Color.*;
 
+import lighting.PointLight;
 import org.junit.jupiter.api.Test;
 
 import geometries.Sphere;
@@ -100,4 +101,39 @@ public class ReflectionRefractionTests {
          .renderImage()
          .writeToImage();
    }
+    /** Produce a picture of a two triangles lighted by a spot light with a partially
+     * transparent Sphere producing partial shadow
+     * with reflection and refraction
+     * */
+    @Test
+    public void refractionReflectionShadow() {
+        scene.geometries.add(
+                new Triangle(new Point(-200, -200, -115), new Point(150, -150, -135),
+                        new Point(150, 150, -150))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60)),
+                new Triangle(new Point(-200, -200, -115), new Point(-70, 70, -140), new Point(150, 150, -150))
+                        .setMaterial(new Material().setKd(0.5).setKs(0.5).setShininess(60)),
+                new Sphere(new Point(60, 50, -70), 30d).setEmission(new Color(BLUE))
+                        .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(0.6).setKr(0.3)));
+        scene.geometries.add(
+                new Triangle(new Point(new Double3(-9, -10, -30).scale(5)), new Point(new Double3(-30, 80, -20)), new Point(new Double3(31, 30, -110).scale(1.5)))
+                        .setMaterial(new Material().setKr(1)).setEmission(new Color(80, 50, 30)));
+        scene.geometries.add(
+                new Sphere(new Point(45, -0, -105), 20d).setEmission(new Color(5, 22, 40))
+                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(20)
+                                .setKt(0.5)),
+                new Sphere(new Point(45, -0, -105), 10d).setEmission(new Color(30, 10, 12))
+                        .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(20)));
+        scene.setAmbientLight(new AmbientLight(new Color(WHITE), 0.15));
+        scene.lights.add(
+                new SpotLight(new Color(700, 400, 400), new Point(50, 60, 0), new Vector(-0.3, -0.3, -1))
+                        .setKl(4E-5).setKq(2E-7));
+
+        cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("refractionReflectionShadow", 600, 600))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
 }
