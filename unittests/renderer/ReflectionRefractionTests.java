@@ -117,7 +117,7 @@ public class ReflectionRefractionTests {
                         .setMaterial(new Material().setKd(0.2).setKs(0.2).setShininess(30).setKt(0.6).setKr(0.3)));
         scene.geometries.add(
                 new Triangle(new Point(new Double3(-9, -10, -30).scale(5)), new Point(new Double3(-30, 80, -20)), new Point(new Double3(31, 30, -110).scale(1.5)))
-                        .setMaterial(new Material().setKr(1)).setEmission(new Color(80, 50, 30)));
+                        .setMaterial(new Material().setKr(1d)).setEmission(new Color(80, 50, 30)));
         scene.geometries.add(
                 new Sphere(new Point(45, -0, -105), 20d).setEmission(new Color(5, 22, 40))
                         .setMaterial(new Material().setKd(0.25).setKs(0.25).setShininess(20)
