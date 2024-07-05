@@ -5,6 +5,8 @@ package renderer;
 
 import static java.awt.Color.*;
 
+import geometries.Geometry;
+import geometries.Plane;
 import lighting.PointLight;
 import org.junit.jupiter.api.Test;
 
@@ -132,6 +134,116 @@ public class ReflectionRefractionTests {
         cameraBuilder.setLocation(new Point(0, 0, 1000)).setVpDistance(1000)
                 .setVpSize(200, 200)
                 .setImageWriter(new ImageWriter("refractionReflectionShadow", 600, 600))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+
+    @Test
+    void pandaScene() {
+        Scene scene = new Scene("Panda Scene");
+
+        Camera.Builder camera = Camera.getBuilder();
+
+        Geometry pandaBody = new Sphere(new Point(0, 0, 0), 50)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaHead = new Sphere(new Point(0, 75, 0), 30)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaEarLeft = new Sphere(new Point(-20, 95, 0), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaEarRight = new Sphere(new Point(20, 95, 0), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaEyeLeft = new Sphere(new Point(-10, 80, 25), 5)
+                .setEmission(new Color(0, 0, 0))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaEyeRight = new Sphere(new Point(10, 80, 25), 5)
+                .setEmission(new Color(0, 0, 0))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaNose = new Sphere(new Point(0, 70, 30), 3)
+                .setEmission(new Color(0, 0, 0))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaLegFrontLeft = new Sphere(new Point(-20, -50, 0), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaLegFrontRight = new Sphere(new Point(20, -50, 0), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaLegBackLeft = new Sphere(new Point(-20, -50, 30), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        Geometry pandaLegBackRight = new Sphere(new Point(20, -50, 30), 10)
+                .setEmission(new Color(50, 50, 50))
+                .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
+
+        // mirror
+        Geometry mirror = new Plane(new Point(0, 0, 200), new Vector(0, 0, -1))
+                .setEmission(new Color(100, 100, 100))
+                .setMaterial(new Material().setKr(1));
+
+        Geometry wall1 = new Plane(new Point(0, 0, -300), new Vector(0, 0, 1))
+                .setEmission(new Color(200, 200, 200))
+                .setMaterial(new Material().setKd(0.5));
+
+        Geometry wall2 = new Plane(new Point(-200, 0, 0), new Vector(1, 0, 0))
+                .setEmission(new Color(200, 200, 200))
+                .setMaterial(new Material().setKd(0.5));
+
+        Geometry wall3 = new Plane(new Point(200, 0, 0), new Vector(1, 0, 0))
+                .setEmission(new Color(200, 200, 200))
+                .setMaterial(new Material().setKr(1));
+
+        Geometry floor = new Plane(new Point(0, -50, 0), new Vector(0, 1, 0))
+                .setEmission(new Color(150, 75, 0))
+                .setMaterial(new Material().setKd(0.5));
+
+        Geometry ceiling = new Plane(new Point(0, 200, 0), new Vector(0, -1, 0))
+                .setEmission(new Color(150, 150, 150))
+                .setMaterial(new Material().setKd(0.5));
+
+        Geometry sphere1 = new Sphere(new Point(-100, 0, 50), 25)
+                .setEmission(new Color(100, 150, 200))
+                .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
+
+        Geometry sphere2 = new Sphere(new Point(100, 0, 50), 25)
+                .setEmission(new Color(200, 100, 150))
+                .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
+
+        Geometry sphere3 = new Sphere(new Point(0, 100, -100), 25)
+                .setEmission(new Color(150, 200, 100))
+                .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
+
+        scene.geometries.add(pandaBody, pandaHead, pandaEarLeft, pandaEarRight, pandaEyeLeft, pandaEyeRight, pandaNose,
+                pandaLegFrontLeft, pandaLegFrontRight, pandaLegBackLeft, pandaLegBackRight, mirror, wall1, wall2, wall3, floor, ceiling, sphere1, sphere2, sphere3);
+
+//        scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(-100, 100, 500), new Vector(1, -1, -2))
+//                .setKl(0.0001).setKq(0.00001));
+        scene.lights.add(new SpotLight(new Color(500, 500, 500), new Point(0, 120, 140), new Vector(-1,-1,-1))
+                .setKl(0.0005).setKq(0.0005).setNarrowBeam(1));
+
+
+
+        camera
+                .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
+                .setLocation(new Point(0, 120, 100))
+                .setVpDistance(50)
+                .setFocusPoint(new Point(0, 75, 0))
+                .setVpSize(200, 200)
+                .setImageWriter(new ImageWriter("PandaScene", 1000, 1000))
+                .setRayTracer(new SimpleRayTracer(scene))
                 .build()
                 .renderImage()
                 .writeToImage();
