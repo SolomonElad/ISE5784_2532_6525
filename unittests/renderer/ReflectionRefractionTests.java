@@ -188,16 +188,16 @@ public class ReflectionRefractionTests {
 
         // Mirror
         Geometry mirror = new Plane(new Point(0, 0, 200), new Vector(0, 0, -1))
-                .setEmission(new Color(100, 100, 100))
+                .setEmission(new Color(100, 100, 100).scale(0.5))
                 .setMaterial(new Material().setKr(1));
 
         // Walls and ceiling with colors
         Geometry wallBack = new Plane(new Point(0, 0, -300), new Vector(0, 0, 1))
-                .setEmission(new Color(173, 216, 230)) // Light Blue
+                .setEmission(new Color(173, 216, 230).scale(0.5)) // Light Blue
                 .setMaterial(new Material().setKd(0.5));
 
         Geometry wallLeft = new Plane(new Point(-200, 0, 0), new Vector(1, 0, 0))
-                .setEmission(new Color(135, 206, 235)) // Sky Blue
+                .setEmission(new Color(135, 206, 235).scale(0.5)) // Sky Blue
                 .setMaterial(new Material().setKd(0.5));
 
 
@@ -236,7 +236,7 @@ public class ReflectionRefractionTests {
                 new Point(-200, 0, -100),    // Top right corner of the ground
                 new Point(-200, 0, -200)     // Top left corner of the ground
         )
-                .setEmission(new Color(34, 139, 34))  // Green color for the ground
+                .setEmission(new Color(34, 139, 34).scale(0.5))  // Green color for the ground
                 .setMaterial(new Material().setKd(0.5));
 
         scene.geometries.add(houseBase, houseRoof, sky, ground);
@@ -244,27 +244,27 @@ public class ReflectionRefractionTests {
 
         // Right wall as a mirror
         Geometry wallRight = new Plane(new Point(200, 0, 0), new Vector(-1, 0, 0))
-                .setEmission(new Color(20, 20, 20))
+                .setEmission(new Color(20, 20, 20).scale(0.5))
                 .setMaterial(new Material().setKr(1).setKt(0).setKs(1));
 
         Geometry floor = new Plane(new Point(0, -50, 0), new Vector(0, 1, 0))
-                .setEmission(new Color(200, 180, 150))
+                .setEmission(new Color(200, 180, 150).scale(0.5))
                 .setMaterial(new Material().setKd(0.5));
 
         Geometry ceiling = new Plane(new Point(0, 200, 0), new Vector(0, -1, 0))
-                .setEmission(new Color(240, 248, 255)) // Alice Blue
+                .setEmission(new Color(240, 248, 255).scale(0.3)) // Alice Blue
                 .setMaterial(new Material().setKd(0.5));
 
         Geometry sphere1 = new Sphere(new Point(-100, 0, 50), 25)
-                .setEmission(new Color(100, 150, 200))
+                .setEmission(new Color(100, 150, 200).scale(0.3))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
         Geometry sphere2 = new Sphere(new Point(100, 0, 50), 20)
-                .setEmission(new Color(200, 100, 150))
+                .setEmission(new Color(200, 100, 150).scale(0.3))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
         Geometry sphere3 = new Sphere(new Point(0, 215, -100), 25)
-                .setEmission(new Color(150, 200, 100))
+                .setEmission(new Color(150, 200, 100).scale(0.3))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
         scene.geometries.add(pandaBody, pandaHead, pandaEarLeft, pandaEarRight, pandaEyeLeft, pandaEyeRight, pandaNose,
@@ -275,7 +275,7 @@ public class ReflectionRefractionTests {
                 .setKl(0.0005).setKq(0.0005));
 
         scene.lights.add(new SpotLight(new Color(500, 500, 500), new Point(0, 120, 140), new Vector(-1, -1, -1))
-                .setKl(0.0005).setKq(0.0005).setNarrowBeam(1));
+                .setKl(0.00005).setKq(0.0003).setNarrowBeam(1));
 
         camera
                 .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
@@ -290,16 +290,17 @@ public class ReflectionRefractionTests {
                 .writeToImage();
 
         camera
-                .setImageWriter(new ImageWriter("PandaScene_Rotation_50", 1000, 1000))
-                .setRotation(50)
+                .setImageWriter(new ImageWriter("PandaScene_2_Rotation_10", 1000, 1000))
+                .setLocation(new Point(-50, 40, -300))
+                .setFocusPoint(new Point(0, 75, 0)).setRotation(200)
                 .build()
                 .renderImage()
                 .writeToImage();
 
         camera
-                .setImageWriter(new ImageWriter("PandaScene_focus", 1000, 1000))
-                .setRotation(310)
-                .setFocusPoint(new Point(0,0,0))
+                .setImageWriter(new ImageWriter("PandaScene_3_panda_view", 1000, 1000))
+                .setLocation(new Point(0, 140, -30))
+                .setFocusPoint(new Point(0, 140, 200)).setRotation(3)
                 .build()
                 .renderImage()
                 .writeToImage();
