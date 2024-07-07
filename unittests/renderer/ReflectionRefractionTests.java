@@ -1,17 +1,14 @@
 /**
- * 
+ *
  */
 package renderer;
 
 import static java.awt.Color.*;
 
-import geometries.Geometry;
-import geometries.Plane;
+import geometries.*;
 import lighting.PointLight;
 import org.junit.jupiter.api.Test;
 
-import geometries.Sphere;
-import geometries.Triangle;
 import lighting.AmbientLight;
 import lighting.SpotLight;
 import primitives.*;
@@ -189,61 +186,130 @@ public class ReflectionRefractionTests {
                 .setEmission(new Color(50, 50, 50))
                 .setMaterial(new Material().setKr(0.1).setKd(0.5).setKs(0.5));
 
-        // mirror
+        // Mirror
         Geometry mirror = new Plane(new Point(0, 0, 200), new Vector(0, 0, -1))
                 .setEmission(new Color(100, 100, 100))
                 .setMaterial(new Material().setKr(1));
 
-        Geometry wall1 = new Plane(new Point(0, 0, -300), new Vector(0, 0, 1))
-                .setEmission(new Color(200, 200, 200))
+        // Walls and ceiling with colors
+        Geometry wallBack = new Plane(new Point(0, 0, -300), new Vector(0, 0, 1))
+                .setEmission(new Color(173, 216, 230)) // Light Blue
                 .setMaterial(new Material().setKd(0.5));
 
-        Geometry wall2 = new Plane(new Point(-200, 0, 0), new Vector(1, 0, 0))
-                .setEmission(new Color(200, 200, 200))
+        Geometry wallLeft = new Plane(new Point(-200, 0, 0), new Vector(1, 0, 0))
+                .setEmission(new Color(135, 206, 235)) // Sky Blue
                 .setMaterial(new Material().setKd(0.5));
 
-        Geometry wall3 = new Plane(new Point(200, 0, 0), new Vector(1, 0, 0))
-                .setEmission(new Color(200, 200, 200))
-                .setMaterial(new Material().setKr(1));
+
+// Creating the house inside the picture frame
+        Geometry houseBase = new Polygon(
+                new Point(-200, 40, -190),   // Bottom left corner of the house base
+                new Point(-200, 40, -110),   // Bottom right corner of the house base
+                new Point(-200, 70, -110),   // Top right corner of the house base
+                new Point(-200, 70, -190)    // Top left corner of the house base
+        )
+                .setEmission(new Color(139, 69, 19))  // Brown color for the house base
+                .setMaterial(new Material().setKd(0.5));
+
+        Geometry houseRoof = new Triangle(
+                new Point(-200, 70, -190),   // Bottom left corner of the roof
+                new Point(-200, 70, -110),   // Bottom right corner of the roof
+                new Point(-200, 100, -150)   // Top center point of the roof
+        )
+                .setEmission(new Color(165, 42, 42))  // Dark red color for the roof
+                .setMaterial(new Material().setKd(0.5));
+
+// Creating the sky above the house
+        Geometry sky = new Polygon(
+                new Point(-200, 100, -200),  // Top left corner of the sky
+                new Point(-200, 100, -100),  // Top right corner of the sky
+                new Point(-200, 70, -100),   // Bottom right corner of the sky
+                new Point(-200, 70, -200)    // Bottom left corner of the sky
+        )
+                .setEmission(new Color(135, 206, 235))  // Sky blue color
+                .setMaterial(new Material().setKd(0.5));
+
+// Creating the ground below the house
+        Geometry ground = new Polygon(
+                new Point(-200, 40, -200),   // Bottom left corner of the ground
+                new Point(-200, 40, -100),   // Bottom right corner of the ground
+                new Point(-200, 0, -100),    // Top right corner of the ground
+                new Point(-200, 0, -200)     // Top left corner of the ground
+        )
+                .setEmission(new Color(34, 139, 34))  // Green color for the ground
+                .setMaterial(new Material().setKd(0.5));
+
+        scene.geometries.add(houseBase, houseRoof, sky, ground);
+
+
+        // Right wall as a mirror
+        Geometry wallRight = new Plane(new Point(200, 0, 0), new Vector(-1, 0, 0))
+                .setEmission(new Color(20, 20, 20))
+                .setMaterial(new Material().setKr(1).setKt(0).setKs(1));
 
         Geometry floor = new Plane(new Point(0, -50, 0), new Vector(0, 1, 0))
-                .setEmission(new Color(150, 75, 0))
+                .setEmission(new Color(200, 180, 150))
                 .setMaterial(new Material().setKd(0.5));
 
         Geometry ceiling = new Plane(new Point(0, 200, 0), new Vector(0, -1, 0))
-                .setEmission(new Color(150, 150, 150))
+                .setEmission(new Color(240, 248, 255)) // Alice Blue
                 .setMaterial(new Material().setKd(0.5));
 
         Geometry sphere1 = new Sphere(new Point(-100, 0, 50), 25)
                 .setEmission(new Color(100, 150, 200))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
-        Geometry sphere2 = new Sphere(new Point(100, 0, 50), 25)
+        Geometry sphere2 = new Sphere(new Point(100, 0, 50), 20)
                 .setEmission(new Color(200, 100, 150))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
-        Geometry sphere3 = new Sphere(new Point(0, 100, -100), 25)
+        Geometry sphere3 = new Sphere(new Point(0, 215, -100), 25)
                 .setEmission(new Color(150, 200, 100))
                 .setMaterial(new Material().setKr(0.3).setKd(0.5).setKs(0.5).setKt(0.3));
 
         scene.geometries.add(pandaBody, pandaHead, pandaEarLeft, pandaEarRight, pandaEyeLeft, pandaEyeRight, pandaNose,
-                pandaLegFrontLeft, pandaLegFrontRight, pandaLegBackLeft, pandaLegBackRight, mirror, wall1, wall2, wall3, floor, ceiling, sphere1, sphere2, sphere3);
+                pandaLegFrontLeft, pandaLegFrontRight, pandaLegBackLeft, pandaLegBackRight, mirror, wallBack, wallLeft, wallRight, floor, ceiling, sphere1, sphere2, sphere3);
 
-//        scene.lights.add(new SpotLight(new Color(700, 400, 400), new Point(-100, 100, 500), new Vector(1, -1, -2))
-//                .setKl(0.0001).setKq(0.00001));
-        scene.lights.add(new SpotLight(new Color(500, 500, 500), new Point(0, 120, 140), new Vector(-1,-1,-1))
+        // Added ceiling light
+        scene.lights.add(new PointLight(new Color(255, 255, 255), new Point(0, 200, 0))
+                .setKl(0.0005).setKq(0.0005));
+
+        scene.lights.add(new SpotLight(new Color(500, 500, 500), new Point(0, 120, 140), new Vector(-1, -1, -1))
                 .setKl(0.0005).setKq(0.0005).setNarrowBeam(1));
-
-
 
         camera
                 .setDirection(new Vector(0, 0, -1), new Vector(0, 1, 0))
                 .setLocation(new Point(0, 120, 100))
-                .setVpDistance(50)
+                .setVpDistance(40)
                 .setFocusPoint(new Point(0, 75, 0))
                 .setVpSize(200, 200)
                 .setImageWriter(new ImageWriter("PandaScene", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
+                .build()
+                .renderImage()
+                .writeToImage();
+
+        camera
+                .setImageWriter(new ImageWriter("PandaScene_Rotation_50", 1000, 1000))
+                .setRotation(50)
+                .build()
+                .renderImage()
+                .writeToImage();
+
+        camera
+                .setImageWriter(new ImageWriter("PandaScene_focus", 1000, 1000))
+                .setRotation(310)
+                .setFocusPoint(new Point(0,0,0))
+                .build()
+                .renderImage()
+                .writeToImage();
+
+        camera
+                .setLocation(new Point(-175, 120, 100))
+                .setVpDistance(50)
+                .setImageWriter(new ImageWriter("PandaScene_FocusPoint(0, 120, 100)_Rotation(270)", 1000, 1000))
+                .setFocusPoint(new Point(0, 120, 100))
+                .setRotation(270)
                 .build()
                 .renderImage()
                 .writeToImage();
