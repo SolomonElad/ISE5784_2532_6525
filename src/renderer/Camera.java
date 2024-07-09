@@ -6,6 +6,11 @@ import primitives.*;
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
+import java.util.stream.IntStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 /**
  * camera class represents the functionality of a camera in
  * our graphic scene, collecting the data needed for the rendering of the final picture
@@ -125,8 +130,27 @@ public class Camera implements Cloneable {
     /**
      * method renders the image using the camera and ray tracer
      * and writes the image to a file
+     *
      * @return the camera object
      */
+//    public Camera renderImage() {
+//        if (imageWriter == null)
+//            throw new UnsupportedOperationException("Missing imageWriter");
+//        if (rayTracer == null)
+//            throw new UnsupportedOperationException("Missing rayTracerBase");
+//
+//        int Nx = imageWriter.getNx();
+//        int Ny = imageWriter.getNy();
+//
+//        for (int i = 0; i < Ny; i++) {
+//            for (int j = 0; j < Nx; j++) {
+//                castRay(Nx, Ny, j, i);
+//            }
+//        }
+//        return this;
+//    }
+
+    //faster version of renderImage - using parallel stream
     public Camera renderImage() {
         if (imageWriter == null)
             throw new UnsupportedOperationException("Missing imageWriter");
@@ -136,13 +160,45 @@ public class Camera implements Cloneable {
         int Nx = imageWriter.getNx();
         int Ny = imageWriter.getNy();
 
-        for (int i = 0; i < Ny; i++) {
-            for (int j = 0; j < Nx; j++) {
+        IntStream.range(0, Ny).parallel().forEach(i -> {
+            IntStream.range(0, Nx).parallel().forEach(j -> {
                 castRay(Nx, Ny, j, i);
-            }
-        }
+            });
+        });
+
         return this;
     }
+
+//    public Camera renderImage() {
+//        if (imageWriter == null)
+//            throw new UnsupportedOperationException("Missing imageWriter");
+//        if (rayTracer == null)
+//            throw new UnsupportedOperationException("Missing rayTracerBase");
+//
+//        int Nx = imageWriter.getNx();
+//        int Ny = imageWriter.getNy();
+//
+//        int numThreads = 2 * Runtime.getRuntime().availableProcessors();
+//        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+//
+//        for (int i = 0; i < Ny; i++) {
+//            final int y = i;
+//            executor.submit(() -> {
+//                for (int j = 0; j < Nx; j++) {
+//                    castRay(Nx, Ny, j, y);
+//                }
+//            });
+//        }
+//
+//        executor.shutdown();
+//        try {
+//            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return this;
+//    }
 
     /**
      * method casts a ray from the camera to a pixel in the view plane
@@ -160,7 +216,7 @@ public class Camera implements Cloneable {
      * method prints a grid on the view plane
      *
      * @param interval interval between grid lines
-     * @param color color of the grid
+     * @param color    color of the grid
      * @return the camera object
      */
     public Camera printGrid(int interval, Color color) {
@@ -285,14 +341,11 @@ public class Camera implements Cloneable {
             camera.vTo = pTo.subtract(camera.p0).normalize();
 
             //calculate vUp and vRight - if vTo is parallel to xy plane, vUp will simply face up
-            if (isZero(pTo.getZ()-camera.getP0().getZ())) {
+            if (isZero(pTo.getZ() - camera.getP0().getZ())) {
                 camera.vUp = new Vector(0, 0, 1);
-            }
-
-            else if (camera.vTo.equals(new Vector(0, 0, 1))){
+            } else if (camera.vTo.equals(new Vector(0, 0, 1))) {
                 camera.vUp = new Vector(0, 1, 0);
-            }
-            else if (camera.vTo.equals(new Vector(0, 0, -1))) {
+            } else if (camera.vTo.equals(new Vector(0, 0, -1))) {
                 camera.vUp = new Vector(0, -1, 0);
             }
             //else, using the plane vto is on that is orthogonal to xy plane, calculate vRight
