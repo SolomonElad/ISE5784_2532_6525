@@ -3,6 +3,8 @@ package renderer;
 import geometries.Plane;
 import primitives.*;
 
+import java.util.List;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -24,6 +26,15 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private Point pCenter;
+
+    //depth of field parameters
+    private double aperture = 0.0;
+    private double focalLength = 0.0;
+    private boolean isModuleActive = false;
+    private int multipleRaysNum = 0;
+    private List<Point> aperturePoints;
+    private Plane focalPlane;
+
 
     // private constructor - camera is built using a builder
     private Camera() {
@@ -123,7 +134,7 @@ public class Camera implements Cloneable {
         if (!isZero(xJ))
             PIJ = PIJ.add(vRight.scale(xJ));
 
-        //return a ray from p0 to PIJ
+        //return a ray from starting point to PIJ
         return new Ray(p0, PIJ.subtract(p0));
     }
 
@@ -209,7 +220,22 @@ public class Camera implements Cloneable {
      * @param row    - vertical index of the pixel
      */
     private void castRay(int Nx, int Ny, int column, int row) {
-        imageWriter.writePixel(column, row, rayTracer.traceRay(constructRay(Nx, Ny, column, row)));
+        if(!isModuleActive)
+            imageWriter.writePixel(column, row, rayTracer.traceRay(constructRay(Nx, Ny, column, row)));
+        else{
+            Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
+            aperturePoints = BlackBoard.generateAperturePoints(p0, vTo, vUp, vRight, aperture, multipleRaysNum);
+            //calculate focal point
+            //on focal plane
+            Point focalPoint = focalPlane.findIntersections(constructRay(Nx, Ny, column, row)).getFirst();
+            //shoot the rays from the aperture points to the focal point
+            for (Point point : aperturePoints) {
+                color = color.add(rayTracer.traceRay(new Ray(point,focalPoint.subtract(point))));
+            }
+            //calculate the average color of the rays
+            color = color.reduce(aperturePoints.size()+1);
+            imageWriter.writePixel(column, row, color);
+        }
     }
 
     /**
@@ -355,6 +381,8 @@ public class Camera implements Cloneable {
                         .getNormal().normalize();
                 camera.vUp = camera.vTo.crossProduct(camera.vRight).normalize();
             }
+            if(camera.isModuleActive)
+                camera.focalLength = camera.p0.distance(pTo);
             return this;
         }
 
@@ -425,6 +453,48 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * builder function - set camera's aperture size
+         *
+         * @param aperture - aperture size
+         * @return builder object with the updated camera
+         */
+        public Builder setAperture(double aperture) {
+            if (isZero(aperture) || aperture <= 0)
+                throw new IllegalArgumentException("aperture size must be a positive number");
+
+            camera.aperture = aperture;
+            camera.isModuleActive = true;
+            return this;
+        }
+
+        /**
+         * builder function - set camera's focal length
+         *
+         * @param focalLength - focal length
+         * @return builder object with the updated camera
+         */
+        public Builder setFocalLength(double focalLength) {
+            if (isZero(focalLength) || focalLength <= 0)
+                throw new IllegalArgumentException("focal length must be a positive number");
+
+            camera.focalLength = focalLength;
+            return this;
+        }
+
+        /*
+         * builder function - set number of rays for depth of field
+         *
+         * @param num - number of rays
+         * @return builder object with the updated camera
+         */
+        public Builder setMultipleRaysNum(int num) {
+            if (num <= 0)
+                throw new IllegalArgumentException("number of rays must be a positive number");
+            camera.multipleRaysNum = num;
+            return this;
+        }
+
+        /**
          * final builder function, checking all resources are given and filling in computed resources
          *
          * @return a clone of the fully built Camera object
@@ -451,12 +521,21 @@ public class Camera implements Cloneable {
             if (camera.rayTracer == null)
                 throw new java.util.MissingResourceException(missingResource, cameraClass, "missing ray tracer");
 
-            //TODO: check for proper values - why check again?
+            //check for depth of field resources
+            if (camera.isModuleActive) {
+                if (camera.aperture == 0.0)
+                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing aperture size");
+                if (camera.focalLength == 0.0)
+                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing focal length");
+                if (camera.multipleRaysNum == 0)
+                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing number of rays");
+            }
 
             //adding computed resources
             //NOTE: algebra-wise, vRight does not need to be normalized because camera's vTo and vUp are
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             camera.pCenter = camera.p0.add(camera.vTo.scale(camera.distance));
+            camera.focalPlane = new Plane(camera.p0.add(camera.vTo.scale(camera.focalLength)), camera.vTo);
             //return clone of final camera object
             try {
                 return (Camera) camera.clone();

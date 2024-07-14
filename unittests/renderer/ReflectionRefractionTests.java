@@ -298,36 +298,39 @@ public class ReflectionRefractionTests {
                 .setVpDistance(40)
                 .setFocusPoint(new Point(0, 75, 0))
                 .setVpSize(200, 200)
+                .setAperture(3d)
+                .setFocalLength(100d)
+                .setMultipleRaysNum(2)
                 .setImageWriter(new ImageWriter("PandaScene", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
                 .build()
                 .renderImage()
                 .writeToImage();
 
-        camera
-                .setImageWriter(new ImageWriter("PandaScene_2_Rotation_10", 1000, 1000))
-                .setLocation(new Point(-50, 40, -300))
-                .setFocusPoint(new Point(0, 75, 0)).setRotation(200)
-                .build()
-                .renderImage()
-                .writeToImage();
-
-        camera
-                .setImageWriter(new ImageWriter("PandaScene_3_panda_view", 1000, 1000))
-                .setLocation(new Point(0, 140, -30))
-                .setFocusPoint(new Point(0, 140, 200)).setRotation(3)
-                .build()
-                .renderImage()
-                .writeToImage();
-
-        camera
-                .setLocation(new Point(-175, 120, 100))
-                .setVpDistance(50)
-                .setImageWriter(new ImageWriter("PandaScene_FocusPoint(0, 120, 100)_Rotation(270)", 1000, 1000))
-                .setFocusPoint(new Point(0, 120, 100))
-                .setRotation(270)
-                .build()
-                .renderImage()
-                .writeToImage();
+//        camera
+//                .setImageWriter(new ImageWriter("PandaScene_2_Rotation_10", 1000, 1000))
+//                .setLocation(new Point(-50, 40, -300))
+//                .setFocusPoint(new Point(0, 75, 0)).setRotation(200)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+//
+//        camera
+//                .setImageWriter(new ImageWriter("PandaScene_3_panda_view", 1000, 1000))
+//                .setLocation(new Point(0, 140, -30))
+//                .setFocusPoint(new Point(0, 140, 200)).setRotation(3)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+//
+//        camera
+//                .setLocation(new Point(-175, 120, 100))
+//                .setVpDistance(50)
+//                .setImageWriter(new ImageWriter("PandaScene_FocusPoint(0, 120, 100)_Rotation(270)", 1000, 1000))
+//                .setFocusPoint(new Point(0, 120, 100))
+//                .setRotation(270)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
     }
 }
