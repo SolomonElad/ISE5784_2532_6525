@@ -42,10 +42,8 @@ public class SimpleRayTracer extends RayTracerBase {
 
     public Color traceMultipleRays(List<Ray> rays){
         Color avg = this.scene.background;
-        GeoPoint closestPoint;
         for(Ray ray : rays) {
-            closestPoint = findClosestIntersection(ray);
-            avg.add(closestPoint == null ? this.scene.background : calcColor(closestPoint, ray));
+            avg = avg.add(traceRay(ray));
         }
         return avg.reduce(rays.size());
     }

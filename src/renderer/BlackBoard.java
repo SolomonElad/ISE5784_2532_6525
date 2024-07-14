@@ -14,6 +14,7 @@ public class BlackBoard {
     public static List<Point> generateAperturePoints(Point p0, Vector vTo, Vector vUp, Vector vRight, double aperture, int multipleRaysNum) {
         Random random = new Random();
         List<Point> points = new ArrayList<Point>();
+        points.add(p0);
         for(double i = -aperture; i < aperture; i+= aperture/multipleRaysNum){
             if(isZero(i)) continue;
             double jitterOffset =  random.nextDouble(-0.1,0.1);

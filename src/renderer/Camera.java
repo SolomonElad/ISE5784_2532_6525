@@ -223,18 +223,13 @@ public class Camera implements Cloneable {
         if(!isModuleActive)
             imageWriter.writePixel(column, row, rayTracer.traceRay(constructRay(Nx, Ny, column, row)));
         else{
-            Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
+            //Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
             aperturePoints = BlackBoard.generateAperturePoints(p0, vTo, vUp, vRight, aperture, multipleRaysNum);
-            //calculate focal point
-            //on focal plane
+            //calculate focal point on focal plane
             Point focalPoint = focalPlane.findIntersections(constructRay(Nx, Ny, column, row)).getFirst();
-            //shoot the rays from the aperture points to the focal point
-            for (Point point : aperturePoints) {
-                color = color.add(rayTracer.traceRay(new Ray(point,focalPoint.subtract(point))));
-            }
-            //calculate the average color of the rays
-            color = color.reduce(aperturePoints.size()+1);
-            imageWriter.writePixel(column, row, color);
+            //trace all rays from aperture points to focal point and write average color to the pixel
+            imageWriter.writePixel(column, row, rayTracer.traceMultipleRays(aperturePoints.stream()
+                    .map(point -> new Ray(point, focalPoint.subtract(point))).toList()));
         }
     }
 
@@ -535,6 +530,7 @@ public class Camera implements Cloneable {
             //NOTE: algebra-wise, vRight does not need to be normalized because camera's vTo and vUp are
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             camera.pCenter = camera.p0.add(camera.vTo.scale(camera.distance));
+            if(camera.isModuleActive)
             camera.focalPlane = new Plane(camera.p0.add(camera.vTo.scale(camera.focalLength)), camera.vTo);
             //return clone of final camera object
             try {
