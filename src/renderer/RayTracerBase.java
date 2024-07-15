@@ -31,5 +31,11 @@ public abstract class RayTracerBase {
      */
     public abstract Color traceRay(Ray ray);
 
+    /**
+     * Traces multiple rays in the scene and returns the average color of the intersection points
+     *
+     * @param rays the rays to trace
+     * @return the average color of the intersection points
+     */
     public abstract Color traceMultipleRays(List<Ray> rays);
 }

@@ -1,6 +1,5 @@
 package primitives;
 
-import java.util.Objects;
 
 /** Class Point represents a point in the 3D space
  *  The class is based on the Double3 class

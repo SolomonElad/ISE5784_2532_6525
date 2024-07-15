@@ -3,6 +3,7 @@ package renderer;
 import geometries.Plane;
 import primitives.*;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -30,11 +31,15 @@ public class Camera implements Cloneable {
     //depth of field parameters
     private double aperture = 0.0;
     private double focalLength = 0.0;
-    private boolean isModuleActive = false;
+    private boolean isDoFModuleActive = false;
     private int multipleRaysNum = 0;
     private List<Point> aperturePoints;
     private Plane focalPlane;
 
+    // pixel manager for the threading
+    private PixelManager pixelManager;
+    private int threadsCount = 0;
+    private double printInterval = 0d;
 
     // private constructor - camera is built using a builder
     private Camera() {
@@ -144,7 +149,56 @@ public class Camera implements Cloneable {
      *
      * @return the camera object
      */
-//    public Camera renderImage() {
+    //faster version of renderImage - using parallel stream
+
+    public Camera renderImage() {
+        if (imageWriter == null)
+            throw new UnsupportedOperationException("Missing imageWriter");
+        if (rayTracer == null)
+            throw new UnsupportedOperationException("Missing rayTracerBase");
+
+        int Nx = imageWriter.getNx();
+        int Ny = imageWriter.getNy();
+//        pixelManager = new PixelManager(Ny, Nx, printInterval);
+//
+//        if (threadsCount == 0)
+//            for (int i = 0; i < Ny; ++i)
+//                for (int j = 0; j < Nx; ++j)
+//                    castRay(Nx, Ny, j, i);
+//        else { // see further... option 2
+//            var threads = new LinkedList<Thread>(); // list of threads
+//            while (threadsCount-- > 0) // add appropriate number of threads
+//                threads.add(new Thread(() -> { // add a thread with its code
+//                    PixelManager.Pixel pixel; // current pixel(row,col)
+//                    // allocate pixel(row,col) in loop until there are no more pixels
+//                    while ((pixel = pixelManager.nextPixel()) != null)
+//                        // cast ray through pixel (and color it – inside castRay)
+//                        castRay(Nx, Ny, pixel.col(), pixel.row());
+//                }));
+//            // start all the threads
+//            for (var thread : threads)
+//                thread.start();
+//            // wait until all the threads have finished
+//            try {
+//                for (var thread : threads)
+//                    thread.join();
+//            } catch (InterruptedException ignore) {
+//            }
+//        }
+//
+//        return this;
+//    }
+
+        IntStream.range(0, Ny).parallel().forEach(i -> {
+            IntStream.range(0, Nx).parallel().forEach(j -> {
+                castRay(Nx, Ny, j, i);
+            });
+        });
+
+        return this;
+   }
+
+    //    public Camera renderImage() {
 //        if (imageWriter == null)
 //            throw new UnsupportedOperationException("Missing imageWriter");
 //        if (rayTracer == null)
@@ -160,25 +214,6 @@ public class Camera implements Cloneable {
 //        }
 //        return this;
 //    }
-
-    //faster version of renderImage - using parallel stream
-    public Camera renderImage() {
-        if (imageWriter == null)
-            throw new UnsupportedOperationException("Missing imageWriter");
-        if (rayTracer == null)
-            throw new UnsupportedOperationException("Missing rayTracerBase");
-
-        int Nx = imageWriter.getNx();
-        int Ny = imageWriter.getNy();
-
-        IntStream.range(0, Ny).parallel().forEach(i -> {
-            IntStream.range(0, Nx).parallel().forEach(j -> {
-                castRay(Nx, Ny, j, i);
-            });
-        });
-
-        return this;
-    }
 
 //    public Camera renderImage() {
 //        if (imageWriter == null)
@@ -220,15 +255,22 @@ public class Camera implements Cloneable {
      * @param row    - vertical index of the pixel
      */
     private void castRay(int Nx, int Ny, int column, int row) {
-        if(!isModuleActive)
+        if (!isDoFModuleActive) {
             imageWriter.writePixel(column, row, rayTracer.traceRay(constructRay(Nx, Ny, column, row)));
-        else{
+//            if (column == 0 && row % 10 == 0) {
+//                System.out.print("Traced: ");
+//                System.out.print((float) row / (float) Ny * 100);
+//                System.out.println("%");
+//            }
+//            pixelManager.pixelDone();
+        } else {
             //Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
-            aperturePoints = BlackBoard.generateAperturePoints(p0, vTo, vUp, vRight, aperture, multipleRaysNum);
+            aperturePoints = Aperture.generateAperturePoints(p0, vUp, vRight, aperture, multipleRaysNum);
             //calculate focal point on focal plane
             Point focalPoint = focalPlane.findIntersections(constructRay(Nx, Ny, column, row)).getFirst();
             //trace all rays from aperture points to focal point and write average color to the pixel
-            imageWriter.writePixel(column, row, rayTracer.traceMultipleRays(aperturePoints.stream()
+
+            imageWriter.writePixel(column, row, rayTracer.traceMultipleRays(aperturePoints.stream().parallel()
                     .map(point -> new Ray(point, focalPoint.subtract(point))).toList()));
         }
     }
@@ -266,6 +308,7 @@ public class Camera implements Cloneable {
 
 
     //////////////////////////// Builder implementation ////////////////////////////
+
     /**
      * ____Inner Class____
      * class builder is used for building a camera object. it is used due to the large amount of parameters
@@ -376,7 +419,7 @@ public class Camera implements Cloneable {
                         .getNormal().normalize();
                 camera.vUp = camera.vTo.crossProduct(camera.vRight).normalize();
             }
-            if(camera.isModuleActive)
+            if (camera.isDoFModuleActive)
                 camera.focalLength = camera.p0.distance(pTo);
             return this;
         }
@@ -418,7 +461,6 @@ public class Camera implements Cloneable {
                             vTo.getZ() * vTo.getY() * (1 - cosTheta) + vTo.getX() * sinTheta,
                             cosTheta + vTo.getZ() * vTo.getZ() * (1 - cosTheta)}
             };
-
         }
 
         /**
@@ -448,6 +490,39 @@ public class Camera implements Cloneable {
         }
 
         /**
+         * builder function - set camera's depth of field module active
+         *
+         * @param isDoFModuleActive - boolean value for depth of field module
+         * @return builder object with the updated camera
+         */
+        public Builder setDoFModuleActive(boolean isDoFModuleActive) {
+            camera.isDoFModuleActive = isDoFModuleActive;
+            return this;
+        }
+
+        /**
+         * builder function - set camera's multi-threading
+         *
+         * @param threadsCount - number of threads
+         * @return builder object with the updated camera
+         */
+        public Builder setMultiThreading(int threadsCount) {
+            camera.threadsCount = threadsCount;
+            return this;
+        }
+
+        /**
+         * builder function - set camera's print interval
+         *
+         * @param printInterval - print interval
+         * @return builder object with the updated camera
+         */
+        public Builder setDebugPrint(double printInterval) {
+            camera.printInterval = printInterval;
+            return this;
+        }
+
+        /**
          * builder function - set camera's aperture size
          *
          * @param aperture - aperture size
@@ -458,7 +533,7 @@ public class Camera implements Cloneable {
                 throw new IllegalArgumentException("aperture size must be a positive number");
 
             camera.aperture = aperture;
-            camera.isModuleActive = true;
+            camera.isDoFModuleActive = true;
             return this;
         }
 
@@ -476,7 +551,7 @@ public class Camera implements Cloneable {
             return this;
         }
 
-        /*
+        /**
          * builder function - set number of rays for depth of field
          *
          * @param num - number of rays
@@ -517,7 +592,7 @@ public class Camera implements Cloneable {
                 throw new java.util.MissingResourceException(missingResource, cameraClass, "missing ray tracer");
 
             //check for depth of field resources
-            if (camera.isModuleActive) {
+            if (camera.isDoFModuleActive) {
                 if (camera.aperture == 0.0)
                     throw new java.util.MissingResourceException(missingResource, cameraClass, "missing aperture size");
                 if (camera.focalLength == 0.0)
@@ -530,8 +605,8 @@ public class Camera implements Cloneable {
             //NOTE: algebra-wise, vRight does not need to be normalized because camera's vTo and vUp are
             camera.vRight = camera.vTo.crossProduct(camera.vUp).normalize();
             camera.pCenter = camera.p0.add(camera.vTo.scale(camera.distance));
-            if(camera.isModuleActive)
-            camera.focalPlane = new Plane(camera.p0.add(camera.vTo.scale(camera.focalLength)), camera.vTo);
+            if (camera.isDoFModuleActive)
+                camera.focalPlane = new Plane(camera.p0.add(camera.vTo.scale(camera.focalLength)), camera.vTo);
             //return clone of final camera object
             try {
                 return (Camera) camera.clone();

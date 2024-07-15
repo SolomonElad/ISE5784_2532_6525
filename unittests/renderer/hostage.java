@@ -41,6 +41,17 @@
 //                .setRotation(180)
 //                .setRayTracer(new SimpleRayTracer(scene))
 //                .setImageWriter(new ImageWriter("Hostages", 1000, 1000))
+//                .setMultiThreading(3)
+//                .setDebugPrint(0.1)
+//                .build()
+//                .renderImage()
+//                .writeToImage();
+//
+//        camera
+//                .setAperture(3d)
+//                .setFocalLength(100d)
+//                .setMultipleRaysNum(10)
+//                .setImageWriter(new ImageWriter("Hostages DoF", 1000, 1000))
 //                .build()
 //                .renderImage()
 //                .writeToImage();

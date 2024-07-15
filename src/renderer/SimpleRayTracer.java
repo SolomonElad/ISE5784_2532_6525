@@ -19,7 +19,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     //although these values are private, they very important for the ray tracer, so we make Javadoc for them
     /** The number of rays to send for the soft shadow effect */
-    private static final int MAX_CALC_COLOR_LEVEL = 5;
+    private static final int MAX_CALC_COLOR_LEVEL = 10;
     /** The minimum value for the attenuation factor */
     private static final double MIN_CALC_COLOR_K = 0.001;
     /** The initial attenuation factor */
@@ -40,12 +40,26 @@ public class SimpleRayTracer extends RayTracerBase {
         return closestPoint == null ? this.scene.background : calcColor(closestPoint, ray);
     }
 
-    public Color traceMultipleRays(List<Ray> rays){
-        Color avg = this.scene.background;
-        for(Ray ray : rays) {
-            avg = avg.add(traceRay(ray));
-        }
-        return avg.reduce(rays.size());
+    /**
+     * Traces multiple rays in the scene and returns the average color of the intersection points
+     *
+     * @param rays the rays to trace
+     * @return the average color of the intersection points
+     */
+//    public Color traceMultipleRays(List<Ray> rays){
+//        Color avg = this.scene.background;
+//        for(Ray ray : rays) {
+//            avg = avg.add(traceRay(ray));
+//        }
+//        return avg.reduce(rays.size());
+//    }
+
+    public Color traceMultipleRays(List<Ray> rays) {
+        return rays.parallelStream()
+                .map(this::traceRay)
+                .reduce(Color::add)
+                .map(color -> color.reduce(rays.size()))
+                .orElse(this.scene.background);
     }
 
     /**
