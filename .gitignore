@@ -30,3 +30,5 @@ bin/
 
 ### Ignore images directory ###
 /images/
+
+/lib/

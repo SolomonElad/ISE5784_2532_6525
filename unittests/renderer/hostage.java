@@ -41,7 +41,7 @@ public class hostage {
                 .setRotation(180)
                 .setRayTracer(new SimpleRayTracer(scene))
                 .setImageWriter(new ImageWriter("Hostages", 1000, 1000))
-                .setMultiThreading(3)
+                .setMultiThreading(0)
                 .setDebugPrint(0.1)
                 .build()
                 .renderImage()
