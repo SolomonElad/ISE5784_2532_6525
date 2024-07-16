@@ -167,24 +167,24 @@ public class DoFTests {
                 .setAperture(3d)
                 .setFocalLength(100d)
                 .setMultipleRaysNum(10)
+                .setMultiThreading(0)
+                .setDebugPrint(1)
+                .setUseGPU(false)
                 .setImageWriter(new ImageWriter("PandaScene DoF", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
                 .build()
                 .renderImage()
                 .writeToImage();
 
-        camera
-                .setImageWriter(new ImageWriter("PandaScene_2_Rotation_10 DoF", 1000, 1000))
-                .setLocation(new Point(-50, 40, -300))
-                .setFocusPoint(new Point(0, 75, 0)).setRotation(200)
-                .build()
-                .renderImage()
-                .writeToImage();
 
         camera
                 .setImageWriter(new ImageWriter("PandaScene_3_panda_view DoF", 1000, 1000))
                 .setLocation(new Point(0, 140, -30))
-                .setFocusPoint(new Point(0, 140, 200)).setRotation(3)
+                .setFocusPoint(new Point(0, 140, 200))
+                .setRotation(3)
+                .setMultiThreading(0)
+                .setDebugPrint(1)
+                .setUseGPU(false)
                 .build()
                 .renderImage()
                 .writeToImage();
@@ -195,6 +195,9 @@ public class DoFTests {
                 .setImageWriter(new ImageWriter("PandaScene_FocusPoint(0, 120, 100)_Rotation(270) DoF", 1000, 1000))
                 .setFocusPoint(new Point(0, 120, 100))
                 .setRotation(270)
+                .setMultiThreading(0)
+                .setDebugPrint(1)
+                .setUseGPU(false)
                 .build()
                 .renderImage()
                 .writeToImage();

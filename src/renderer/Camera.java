@@ -3,16 +3,20 @@ package renderer;
 import geometries.Plane;
 import primitives.*;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
-import java.util.stream.IntStream;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+
+import java.util.stream.IntStream;
+
+import com.aparapi.Kernel;
+import com.aparapi.Range;
+import primitives.Vector;
 
 /**
  * camera class represents the functionality of a camera in
@@ -33,13 +37,14 @@ public class Camera implements Cloneable {
     private double focalLength = 0.0;
     private boolean isDoFModuleActive = false;
     private int multipleRaysNum = 0;
-    private List<Point> aperturePoints;
     private Plane focalPlane;
 
     // pixel manager for the threading
     private PixelManager pixelManager;
+
     private int threadsCount = 0;
     private double printInterval = 0d;
+    private boolean useGPU = false;
 
     // private constructor - camera is built using a builder
     private Camera() {
@@ -150,7 +155,6 @@ public class Camera implements Cloneable {
      * @return the camera object
      */
     //faster version of renderImage - using parallel stream
-
     public Camera renderImage() {
         if (imageWriter == null)
             throw new UnsupportedOperationException("Missing imageWriter");
@@ -159,46 +163,87 @@ public class Camera implements Cloneable {
 
         int Nx = imageWriter.getNx();
         int Ny = imageWriter.getNy();
-//        pixelManager = new PixelManager(Ny, Nx, printInterval);
-//
-//        if (threadsCount == 0)
-//            for (int i = 0; i < Ny; ++i)
-//                for (int j = 0; j < Nx; ++j)
-//                    castRay(Nx, Ny, j, i);
-//        else { // see further... option 2
-//            var threads = new LinkedList<Thread>(); // list of threads
-//            while (threadsCount-- > 0) // add appropriate number of threads
-//                threads.add(new Thread(() -> { // add a thread with its code
-//                    PixelManager.Pixel pixel; // current pixel(row,col)
-//                    // allocate pixel(row,col) in loop until there are no more pixels
-//                    while ((pixel = pixelManager.nextPixel()) != null)
-//                        // cast ray through pixel (and color it – inside castRay)
-//                        castRay(Nx, Ny, pixel.col(), pixel.row());
-//                }));
-//            // start all the threads
-//            for (var thread : threads)
-//                thread.start();
-//            // wait until all the threads have finished
-//            try {
-//                for (var thread : threads)
-//                    thread.join();
-//            } catch (InterruptedException ignore) {
-//            }
-//        }
-//
-//        return this;
-//    }
+        pixelManager = new PixelManager(Ny, Nx, printInterval);
+        Random random = new Random();
 
-        IntStream.range(0, Ny).parallel().forEach(i -> {
-            IntStream.range(0, Nx).parallel().forEach(j -> {
-                castRay(Nx, Ny, j, i);
-            });
-        });
+        if (threadsCount == 0)
+            if (random.nextBoolean() || useGPU) {
+                //renderOnGPU
+                final int NUM_KERNELS = 6;
+                List<Kernel> kernels = new ArrayList<>();
+                List<Thread> threads = new ArrayList<>();
+
+                for (int k = 0; k < NUM_KERNELS; k++) {
+                    final int startY = k * (Ny / NUM_KERNELS);
+                    final int endY = (k == NUM_KERNELS - 1) ? Ny : (k + 1) * (Ny / NUM_KERNELS);
+
+                    Kernel kernel = new Kernel() {
+                        @Override
+                        public void run() {
+                            int i = getGlobalId(1) + startY;
+                            int j = getGlobalId(0);
+                            if (i < endY) {
+                                castRay(Nx, Ny, j, i);
+                            }
+                        }
+                    };
+
+                    kernels.add(kernel);
+
+                    final Range range = Range.create2D(Nx, endY - startY);
+                    Thread thread = new Thread(() -> kernel.execute(range));
+                    threads.add(thread);
+                    thread.start();
+                    System.out.println("GPU");
+
+                }
+
+                for (Thread thread : threads) {
+                    try {
+                        thread.join();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                for (Kernel kernel : kernels) {
+                    kernel.dispose();
+                }
+            } else {
+                //renderOnCPU
+                IntStream.range(0, Ny).parallel().forEach(i -> {
+                    IntStream.range(0, Nx).parallel().forEach(j -> {
+                        castRay(Nx, Ny, j, i);
+                    });
+                });
+                System.out.println("CPU");
+            }
+
+        else { // see further... option 2
+            var threads = new LinkedList<Thread>(); // list of threads
+            while (threadsCount-- > 0) // add appropriate number of threads
+                threads.add(new Thread(() -> { // add a thread with its code
+                    PixelManager.Pixel pixel; // current pixel(row,col)
+                    // allocate pixel(row,col) in loop until there are no more pixels
+                    while ((pixel = pixelManager.nextPixel()) != null)
+                        // cast ray through pixel (and color it – inside castRay)
+                        castRay(Nx, Ny, pixel.col(), pixel.row());
+                }));
+            // start all the threads
+            for (var thread : threads)
+                thread.start();
+            // wait until all the threads have finished
+            try {
+                for (var thread : threads)
+                    thread.join();
+            } catch (InterruptedException ignore) {
+            }
+        }
 
         return this;
-   }
+    }
 
-    //    public Camera renderImage() {
+//        public Camera renderImage() {
 //        if (imageWriter == null)
 //            throw new UnsupportedOperationException("Missing imageWriter");
 //        if (rayTracer == null)
@@ -212,6 +257,31 @@ public class Camera implements Cloneable {
 //                castRay(Nx, Ny, j, i);
 //            }
 //        }
+//        return this;
+//    }
+
+//    public Camera renderImage() {
+//        if (imageWriter == null)
+//            throw new UnsupportedOperationException("Missing imageWriter");
+//        if (rayTracer == null)
+//            throw new UnsupportedOperationException("Missing rayTracerBase");
+//
+//        int Nx = imageWriter.getNx();
+//        int Ny = imageWriter.getNy();
+//
+//        Kernel kernel = new Kernel() {
+//            @Override
+//            public void run() {
+//                int i = getGlobalId(1);
+//                int j = getGlobalId(0);
+//                castRay(Nx, Ny, j, i);
+//            }
+//        };
+//
+//        Range range = Range.create2D(Nx, Ny);
+//        kernel.execute(range);
+//        kernel.dispose();
+//
 //        return this;
 //    }
 
@@ -246,6 +316,7 @@ public class Camera implements Cloneable {
 //        return this;
 //    }
 
+
     /**
      * method casts a ray from the camera to a pixel in the view plane
      *
@@ -257,15 +328,10 @@ public class Camera implements Cloneable {
     private void castRay(int Nx, int Ny, int column, int row) {
         if (!isDoFModuleActive) {
             imageWriter.writePixel(column, row, rayTracer.traceRay(constructRay(Nx, Ny, column, row)));
-//            if (column == 0 && row % 10 == 0) {
-//                System.out.print("Traced: ");
-//                System.out.print((float) row / (float) Ny * 100);
-//                System.out.println("%");
-//            }
 //            pixelManager.pixelDone();
         } else {
             //Color color = rayTracer.traceRay(constructRay(Nx, Ny, column, row));
-            aperturePoints = Aperture.generateAperturePoints(p0, vUp, vRight, aperture, multipleRaysNum);
+            List<Point> aperturePoints = Aperture.generateAperturePoints(p0, vUp, vRight, aperture, multipleRaysNum);
             //calculate focal point on focal plane
             Point focalPoint = focalPlane.findIntersections(constructRay(Nx, Ny, column, row)).getFirst();
             //trace all rays from aperture points to focal point and write average color to the pixel
@@ -307,7 +373,7 @@ public class Camera implements Cloneable {
     }
 
 
-    //////////////////////////// Builder implementation ////////////////////////////
+//////////////////////////// Builder implementation ////////////////////////////
 
     /**
      * ____Inner Class____
@@ -564,6 +630,18 @@ public class Camera implements Cloneable {
             return this;
         }
 
+
+        /**
+         * builder function - set use of GPU
+         *
+         * @param useGPU - boolean value for GPU usage
+         * @return builder object with the updated camera
+         */
+        public Builder setUseGPU(boolean useGPU) {
+            camera.useGPU = useGPU;
+            return this;
+        }
+
         /**
          * final builder function, checking all resources are given and filling in computed resources
          *
@@ -574,31 +652,31 @@ public class Camera implements Cloneable {
             String cameraClass = "Camera class";
             //check for missing resources
             if (camera.p0 == null)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing location point");
+                throw new MissingResourceException(missingResource, cameraClass, "missing location point");
             if (camera.vTo == null)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing forward direction vector");
+                throw new MissingResourceException(missingResource, cameraClass, "missing forward direction vector");
             if (camera.vUp == null)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing upward direction vector");
+                throw new MissingResourceException(missingResource, cameraClass, "missing upward direction vector");
             if (camera.width == 0.0)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing view plane width");
+                throw new MissingResourceException(missingResource, cameraClass, "missing view plane width");
             if (camera.height == 0.0)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing view plane height");
+                throw new MissingResourceException(missingResource, cameraClass, "missing view plane height");
             if (camera.distance == 0.0)
-                throw new java.util.MissingResourceException(missingResource, cameraClass,
+                throw new MissingResourceException(missingResource, cameraClass,
                         "missing view plane distance from camera");
             if (camera.imageWriter == null)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing image writer");
+                throw new MissingResourceException(missingResource, cameraClass, "missing image writer");
             if (camera.rayTracer == null)
-                throw new java.util.MissingResourceException(missingResource, cameraClass, "missing ray tracer");
+                throw new MissingResourceException(missingResource, cameraClass, "missing ray tracer");
 
             //check for depth of field resources
             if (camera.isDoFModuleActive) {
                 if (camera.aperture == 0.0)
-                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing aperture size");
+                    throw new MissingResourceException(missingResource, cameraClass, "missing aperture size");
                 if (camera.focalLength == 0.0)
-                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing focal length");
+                    throw new MissingResourceException(missingResource, cameraClass, "missing focal length");
                 if (camera.multipleRaysNum == 0)
-                    throw new java.util.MissingResourceException(missingResource, cameraClass, "missing number of rays");
+                    throw new MissingResourceException(missingResource, cameraClass, "missing number of rays");
             }
 
             //adding computed resources
